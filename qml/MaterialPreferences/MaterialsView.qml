@@ -437,7 +437,7 @@ TabView
                         readOnly: !base.editingEnabled
                         suffix: " " + model.unit
                         maximumValue: 99999
-                        decimals: model.unit == "mm" ? 2 : 0
+                        decimals: (model.unit == "mm" || (model.type == "float" && model.unit == undefined)) ? 2 : 0
 
                         onEditingFinished: materialPropertyProvider.setPropertyValue("value", value)
                     }
