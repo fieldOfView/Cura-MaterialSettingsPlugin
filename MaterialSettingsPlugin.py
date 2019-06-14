@@ -3,9 +3,13 @@
 
 import os.path
 
-from UM.Application import Application
+from cura.CuraApplication import CuraApplication
 from UM.Extension import Extension
+from UM.Resources import Resources
+from UM.Logger import Logger
+
 from PyQt5.QtQml import qmlRegisterType
+from PyQt5.QtCore import QUrl
 
 from . import MaterialSettingsPluginVisibilityHandler
 
@@ -32,12 +36,12 @@ class MaterialSettingsPlugin(Extension):
             "material_flow",
         }
 
-        Application.getInstance().getPreferences().addPreference(
+        CuraApplication.getInstance().getPreferences().addPreference(
             "material_settings/visible_settings",
             ";".join(default_material_settings)
         )
 
-        Application.getInstance().engineCreatedSignal.connect(self._onEngineCreated)
+        CuraApplication.getInstance().engineCreatedSignal.connect(self._onEngineCreated)
 
     def _onEngineCreated(self):
         qmlRegisterType(
@@ -45,7 +49,26 @@ class MaterialSettingsPlugin(Extension):
             "Cura", 1, 0, "MaterialSettingsVisibilityHandler"
         )
 
+        preferencesDialog = None
+        for child in CuraApplication.getInstance().getMainWindow().contentItem().children():
+            try:
+                test = child.setPage # only PreferencesDialog has a setPage function
+                preferencesDialog = child
+                break
+            except:
+                pass
+
+        if preferencesDialog:
+            Logger.log("d", "Replacing Materials preferencepane with patched version")
+            #materialPreferences = QUrl.fromLocalFile(Resources.getPath(CuraApplication.ResourceTypes.QmlFiles, "Preferences/Materials/MaterialsPage.qml"))
+            materialPreferences = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "MaterialPreferences", "MaterialsPage.qml"))
+
+            preferencesDialog.removePage(3)
+            preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferences.toString())
+        else:
+            Logger.log("w", "Could not replace Materials preferencepane with patched version")
+
     def showSettingsDialog(self):
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "SettingsDialog.qml")
-        self._settings_dialog = Application.getInstance().createQmlComponent(path, {"manager": self})
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "SettingsDialog.qml")
+        self._settings_dialog = CuraApplication.getInstance().createQmlComponent(path, {"manager": self})
         self._settings_dialog.show()
