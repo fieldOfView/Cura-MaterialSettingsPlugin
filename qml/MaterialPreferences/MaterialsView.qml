@@ -383,83 +383,139 @@ TabView
             rightMargin: 0
         }
 
+        Component
+        {
+            id: settingTextField;
+
+            Cura.SettingTextField { }
+        }
+
+        Component
+        {
+            id: settingComboBox;
+
+            Cura.SettingComboBox { }
+        }
+
+        Component
+        {
+            id: settingExtruder;
+
+            Cura.SettingExtruder { }
+        }
+
+        Component
+        {
+            id: settingCheckBox;
+
+            Cura.SettingCheckBox { }
+        }
+
+        Component
+        {
+            id: settingCategory;
+
+            Cura.SettingCategory { }
+        }
+
+        Component
+        {
+            id: settingUnknown;
+
+            Cura.SettingUnknown { }
+        }
+
+
         ScrollView
         {
             anchors.fill: parent;
 
+            Rectangle
+            {
+                parent: viewport
+                anchors.fill: parent
+                color: UM.Theme.getColor("main_background")
+            }
+
             ListView
             {
+                width: parent.width
+                spacing: UM.Theme.getSize("default_lining").height
+
                 model: UM.SettingDefinitionsModel
                 {
+                    id: addedSettingsModel
                     containerId: Cura.MachineManager.activeDefinitionId
                     visibilityHandler: Cura.MaterialSettingsVisibilityHandler { }
                     expanded: ["*"]
                 }
 
-                delegate: UM.TooltipArea
+                delegate: Loader
                 {
-                    width: childrenRect.width
-                    height: childrenRect.height
-                    text: model.description
-                    Label
-                    {
-                        id: label
-                        width: base.firstColumnWidth;
-                        height: spinBox.height + UM.Theme.getSize("default_lining").height
-                        text: model.label
-                        elide: Text.ElideRight
-                        verticalAlignment: Qt.AlignVCenter
-                    }
-                    Cura.ReadOnlySpinBox
-                    {
-                        id: spinBox
-                        anchors.left: label.right
-                        value:
-                        {
-                            // In case the setting is not in the material...
-                            if (!isNaN(parseFloat(materialPropertyProvider.properties.value)))
-                            {
-                                return parseFloat(materialPropertyProvider.properties.value);
-                            }
-                            // ... we search in the variant, and if it is not there...
-                            if (!isNaN(parseFloat(variantPropertyProvider.properties.value)))
-                            {
-                                return parseFloat(variantPropertyProvider.properties.value);
-                            }
-                            // ... then look in the definition container.
-                            if (!isNaN(parseFloat(machinePropertyProvider.properties.value)))
-                            {
-                                return parseFloat(machinePropertyProvider.properties.value);
-                            }
-                            return 0;
-                        }
-                        width: base.secondColumnWidth
-                        readOnly: !base.editingEnabled
-                        suffix: " " + model.unit
-                        maximumValue: 99999
-                        decimals: (model.unit == "mm" || (model.type == "float" && model.unit == "")) ? 2 : 0
+                    id: settingLoader
+                    width: parent.width
+                    height: UM.Theme.getSize("section").height
 
-                        onEditingFinished: materialPropertyProvider.setPropertyValue("value", value)
+                    property var definition: model
+                    property var settingDefinitionsModel: addedSettingsModel
+                    property var propertyProvider: materialPropertyProvider
+                    property var globalPropertyProvider: inheritStackProvider
+                    property var externalResetHandler: false
+
+                    //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
+                    //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
+                    //causing nasty issues when selecting different options. So disable asynchronous loading of enum type completely.
+                    asynchronous: model.type != "enum" && model.type != "extruder"
+
+                    onLoaded: {
+                        settingLoader.item.showRevertButton = true
+                        settingLoader.item.showInheritButton = false
+                        settingLoader.item.showLinkedSettingIcon = false
+                        settingLoader.item.doDepthIndentation = false
+                        settingLoader.item.doQualityUserSettingEmphasis = false
+                    }
+
+                    sourceComponent:
+                    {
+                        switch(model.type)
+                        {
+                            case "int":
+                                return settingTextField
+                            case "[int]":
+                                return settingTextField
+                            case "float":
+                                return settingTextField
+                            case "enum":
+                                return settingComboBox
+                            case "extruder":
+                                return settingExtruder
+                            case "optional_extruder":
+                                return settingOptionalExtruder
+                            case "bool":
+                                return settingCheckBox
+                            case "str":
+                                return settingTextField
+                            case "category":
+                                return settingCategory
+                            default:
+                                return settingUnknown
+                        }
+                    }
+
+                    // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
+                    // so we bypass that to make a dedicated provider).
+                    UM.SettingPropertyProvider
+                    {
+                        id: inheritStackProvider
+                        containerStackId: Cura.MachineManager.activeMachineId
+                        key: model.key
+                        watchedProperties: [ "limit_to_extruder" ]
                     }
 
                     UM.ContainerPropertyProvider
                     {
                         id: materialPropertyProvider
                         containerId: base.containerId
-                        watchedProperties: [ "value" ]
-                        key: model.key
-                    }
-                    UM.ContainerPropertyProvider
-                    {
-                        id: variantPropertyProvider
-                        containerId: Cura.MachineManager.activeVariantId
-                        watchedProperties: [ "value" ]
-                        key: model.key
-                    }
-                    UM.ContainerPropertyProvider
-                    {
-                        id: machinePropertyProvider
-                        containerId: Cura.MachineManager.activeDefinitionId
                         watchedProperties: [ "value" ]
                         key: model.key
                     }
