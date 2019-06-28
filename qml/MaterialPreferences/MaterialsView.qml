@@ -7,6 +7,7 @@ import QtQuick.Dialogs 1.2
 
 import UM 1.2 as UM
 import Cura 1.0 as Cura
+import MaterialSettingsPlugin 1.0 as MaterialSettingsPlugin
 
 TabView
 {
@@ -425,6 +426,10 @@ TabView
             Cura.SettingUnknown { }
         }
 
+        property var customStack: MaterialSettingsPlugin.CustomStack
+        {
+            containerIds: [Cura.MachineManager.activeDefinitionId, Cura.MachineManager.activeVariantId, base.containerId]
+        }
 
         ScrollView
         {
@@ -453,14 +458,22 @@ TabView
                 delegate: Loader
                 {
                     id: settingLoader
-                    width: parent.width
                     height: UM.Theme.getSize("section").height
+
+                    anchors.left: parent.left
+                    anchors.leftMargin: UM.Theme.getSize("default_margin").width
+                    anchors.right: parent.right
 
                     property var definition: model
                     property var settingDefinitionsModel: addedSettingsModel
-                    property var propertyProvider: materialPropertyProvider
+                    property var propertyProvider: provider
                     property var globalPropertyProvider: inheritStackProvider
                     property var externalResetHandler: false
+
+                    Component.onCompleted:
+                    {
+                        provider.containerStackId = customStack.stackId
+                    }
 
                     //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
                     //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
@@ -502,6 +515,15 @@ TabView
                         }
                     }
 
+                    UM.SettingPropertyProvider
+                    {
+                        id: provider
+                        containerStackId: "" // to be specified when the component loads
+                        key: model.key
+                        storeIndex: 0
+                        watchedProperties: [ "value" ]
+                    }
+
                     // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
                     // so we bypass that to make a dedicated provider).
                     UM.SettingPropertyProvider
@@ -510,14 +532,6 @@ TabView
                         containerStackId: Cura.MachineManager.activeMachineId
                         key: model.key
                         watchedProperties: [ "limit_to_extruder" ]
-                    }
-
-                    UM.ContainerPropertyProvider
-                    {
-                        id: materialPropertyProvider
-                        containerId: base.containerId
-                        watchedProperties: [ "value" ]
-                        key: model.key
                     }
                 }
             }
