@@ -455,83 +455,90 @@ TabView
                     expanded: ["*"]
                 }
 
-                delegate: Loader
+                delegate: UM.TooltipArea
                 {
-                    id: settingLoader
-                    height: UM.Theme.getSize("section").height
+                    width: parent.width
+                    height: childrenRect.height
+                    text: model.description
 
-                    anchors.left: parent.left
-                    anchors.leftMargin: UM.Theme.getSize("default_margin").width
-                    anchors.right: parent.right
-
-                    property var definition: model
-                    property var settingDefinitionsModel: addedSettingsModel
-                    property var propertyProvider: provider
-                    property var globalPropertyProvider: inheritStackProvider
-                    property var externalResetHandler: false
-
-                    Component.onCompleted:
+                    Loader
                     {
-                        provider.containerStackId = customStack.stackId
-                    }
+                        id: settingLoader
+                        height: UM.Theme.getSize("section").height
 
-                    //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
-                    //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
-                    //causing nasty issues when selecting different options. So disable asynchronous loading of enum type completely.
-                    asynchronous: model.type != "enum" && model.type != "extruder"
+                        anchors.left: parent.left
+                        anchors.leftMargin: UM.Theme.getSize("default_margin").width
+                        anchors.right: parent.right
 
-                    onLoaded: {
-                        settingLoader.item.showRevertButton = true
-                        settingLoader.item.showInheritButton = false
-                        settingLoader.item.showLinkedSettingIcon = false
-                        settingLoader.item.doDepthIndentation = false
-                        settingLoader.item.doQualityUserSettingEmphasis = false
-                    }
+                        property var definition: model
+                        property var settingDefinitionsModel: addedSettingsModel
+                        property var propertyProvider: provider
+                        property var globalPropertyProvider: inheritStackProvider
+                        property var externalResetHandler: false
 
-                    sourceComponent:
-                    {
-                        switch(model.type)
+                        Component.onCompleted:
                         {
-                            case "int":
-                                return settingTextField
-                            case "[int]":
-                                return settingTextField
-                            case "float":
-                                return settingTextField
-                            case "enum":
-                                return settingComboBox
-                            case "extruder":
-                                return settingExtruder
-                            case "optional_extruder":
-                                return settingOptionalExtruder
-                            case "bool":
-                                return settingCheckBox
-                            case "str":
-                                return settingTextField
-                            case "category":
-                                return settingCategory
-                            default:
-                                return settingUnknown
+                            provider.containerStackId = customStack.stackId
                         }
-                    }
 
-                    UM.SettingPropertyProvider
-                    {
-                        id: provider
-                        containerStackId: "" // to be specified when the component loads
-                        key: model.key
-                        storeIndex: 0
-                        watchedProperties: [ "value" ]
-                    }
+                        //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
+                        //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
+                        //causing nasty issues when selecting different options. So disable asynchronous loading of enum type completely.
+                        asynchronous: model.type != "enum" && model.type != "extruder"
 
-                    // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
-                    // so we bypass that to make a dedicated provider).
-                    UM.SettingPropertyProvider
-                    {
-                        id: inheritStackProvider
-                        containerStackId: Cura.MachineManager.activeMachineId
-                        key: model.key
-                        watchedProperties: [ "limit_to_extruder" ]
+                        onLoaded: {
+                            settingLoader.item.showRevertButton = true
+                            settingLoader.item.showInheritButton = false
+                            settingLoader.item.showLinkedSettingIcon = false
+                            settingLoader.item.doDepthIndentation = false
+                            settingLoader.item.doQualityUserSettingEmphasis = false
+                        }
+
+                        sourceComponent:
+                        {
+                            switch(model.type)
+                            {
+                                case "int":
+                                    return settingTextField
+                                case "[int]":
+                                    return settingTextField
+                                case "float":
+                                    return settingTextField
+                                case "enum":
+                                    return settingComboBox
+                                case "extruder":
+                                    return settingExtruder
+                                case "optional_extruder":
+                                    return settingOptionalExtruder
+                                case "bool":
+                                    return settingCheckBox
+                                case "str":
+                                    return settingTextField
+                                case "category":
+                                    return settingCategory
+                                default:
+                                    return settingUnknown
+                            }
+                        }
+
+                        UM.SettingPropertyProvider
+                        {
+                            id: provider
+                            containerStackId: "" // to be specified when the component loads
+                            key: model.key
+                            storeIndex: 0
+                            watchedProperties: [ "value" ]
+                        }
+
+                        // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
+                        // so we bypass that to make a dedicated provider).
+                        UM.SettingPropertyProvider
+                        {
+                            id: inheritStackProvider
+                            containerStackId: Cura.MachineManager.activeMachineId
+                            key: model.key
+                            watchedProperties: [ "limit_to_extruder" ]
+                        }
                     }
                 }
             }
