@@ -4,7 +4,7 @@
 from UM.Settings.ContainerStack import ContainerStack
 from UM.Application import Application
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
 
 class CustomStackProxy(QObject):
@@ -49,3 +49,8 @@ class CustomStackProxy(QObject):
     @pyqtProperty("QVariantList", fset = setContainerIds, notify = containerIdsChanged)
     def containerIds(self):
         return self._container_ids
+
+    @pyqtSlot(str)
+    def removeInstanceFromTop(self, key):
+        self._stack.getTop().removeInstance(key)
+        self._stack.getTop().setDirty(True)

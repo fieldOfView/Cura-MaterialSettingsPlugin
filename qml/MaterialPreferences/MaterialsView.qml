@@ -474,7 +474,12 @@ TabView
                         property var settingDefinitionsModel: addedSettingsModel
                         property var propertyProvider: provider
                         property var globalPropertyProvider: inheritStackProvider
-                        property var externalResetHandler: false
+                        property var externalResetHandler: resetToDefault
+
+                        function resetToDefault()
+                        {
+                            customStack.removeInstanceFromTop(model.key)
+                        }
 
                         Component.onCompleted:
                         {
