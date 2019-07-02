@@ -439,7 +439,19 @@ TabView
             {
                 parent: viewport
                 anchors.fill: parent
-                color: UM.Theme.getColor("main_background")
+                color:
+                {
+                    if(CuraSDKVersion >= "6.0.0")
+                    {
+                        // version 4.0 and newer
+                        return UM.Theme.getColor("main_background")
+                    }
+                    else
+                    {
+                        // version 3.6 and before
+                        return UM.Theme.getColor("sidebar")
+                    }
+                }
             }
 
             ListView
