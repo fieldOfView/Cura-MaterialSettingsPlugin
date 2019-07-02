@@ -544,7 +544,7 @@ TabView
                             containerStackId: "" // to be specified when the component loads
                             key: model.key
                             storeIndex: 0
-                            watchedProperties: [ "value" ]
+                            watchedProperties: [ "value", "enabled", "state", "validationState" ]
                         }
 
                         // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
