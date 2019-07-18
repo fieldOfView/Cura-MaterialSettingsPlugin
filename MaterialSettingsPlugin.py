@@ -49,6 +49,8 @@ class MaterialSettingsPlugin(Extension):
             "Cura", 1, 0, "MaterialSettingsVisibilityHandler"
         )
 
+        # Adding/removing pages from the preferences dialog is handles in QML
+        # There is no way to access the preferences dialog directly, so we have to search for it
         preferencesDialog = None
         for child in CuraApplication.getInstance().getMainWindow().contentItem().children():
             try:
@@ -60,13 +62,12 @@ class MaterialSettingsPlugin(Extension):
 
         if preferencesDialog:
             Logger.log("d", "Replacing Materials preferencepane with patched version")
-            #materialPreferences = QUrl.fromLocalFile(Resources.getPath(CuraApplication.ResourceTypes.QmlFiles, "Preferences/Materials/MaterialsPage.qml"))
             materialPreferences = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "MaterialPreferences", "MaterialsPage.qml"))
 
             preferencesDialog.removePage(3)
             preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferences.toString())
         else:
-            Logger.log("w", "Could not replace Materials preferencepane with patched version")
+            Logger.log("e", "Could not replace Materials preferencepane with patched version")
 
     def showSettingsDialog(self):
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "SettingsDialog.qml")
