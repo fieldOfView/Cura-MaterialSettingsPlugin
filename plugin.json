@@ -1,7 +1,7 @@
 {
     "name": "Material Settings",
     "author": "fieldOfView",
-    "version": "3.5.0",
+    "version": "3.5.1",
     "description": "Lets the user select which print settings are available on the Materials pane of the preferences.",
     "api": 5,
     "supported_sdk_versions": ["5.0.0", "6.0.0"]
