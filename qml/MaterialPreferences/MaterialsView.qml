@@ -458,6 +458,7 @@ TabView
             {
                 width: parent.width
                 spacing: UM.Theme.getSize("default_lining").height
+                enabled: base.editingEnabled
 
                 model: UM.SettingDefinitionsModel
                 {
