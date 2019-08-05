@@ -13,7 +13,6 @@ Item
 {
     id: base
 
-    property QtObject materialManager: CuraApplication.getMaterialManager()
     // Keep PreferencesDialog happy
     property var resetEnabled: false
     property var currentItem: null
@@ -41,8 +40,18 @@ Item
         name: "cura"
     }
 
+    function resetExpandedActiveMaterial()
+    {
+        materialListView.expandActiveMaterial(active_root_material_id)
+    }
+
+    function setExpandedActiveMaterial(root_material_id)
+    {
+        materialListView.expandActiveMaterial(root_material_id)
+    }
+
     // When loaded, try to select the active material in the tree
-    Component.onCompleted: materialListView.expandActiveMaterial(active_root_material_id)
+    Component.onCompleted: resetExpandedActiveMaterial()
 
     // Every time the selected item has changed, notify to the details panel
     onCurrentItemChanged:
@@ -81,6 +90,7 @@ Item
         // Activate button
         Button
         {
+            id: activateMenuButton
             text: catalog.i18nc("@action:button", "Activate")
             iconName: "list-activate"
             enabled: !isCurrentItemActivated && Cura.MachineManager.hasMaterials
@@ -98,12 +108,13 @@ Item
         // Create button
         Button
         {
+            id: createMenuButton
             text: catalog.i18nc("@action:button", "Create")
             iconName: "list-add"
             onClicked:
             {
                 forceActiveFocus();
-                base.newRootMaterialIdToSwitchTo = base.materialManager.createMaterial();
+                base.newRootMaterialIdToSwitchTo = CuraApplication.getMaterialManager().createMaterial();
                 base.toActivateNewMaterial = true;
             }
         }
@@ -111,13 +122,14 @@ Item
         // Duplicate button
         Button
         {
+            id: duplicateMenuButton
             text: catalog.i18nc("@action:button", "Duplicate");
             iconName: "list-add"
             enabled: base.hasCurrentItem
             onClicked:
             {
                 forceActiveFocus();
-                base.newRootMaterialIdToSwitchTo = base.materialManager.duplicateMaterial(base.currentItem.container_node);
+                base.newRootMaterialIdToSwitchTo = CuraApplication.getMaterialManager().duplicateMaterial(base.currentItem.container_node);
                 base.toActivateNewMaterial = true;
             }
         }
@@ -125,9 +137,10 @@ Item
         // Remove button
         Button
         {
+            id: removeMenuButton
             text: catalog.i18nc("@action:button", "Remove")
             iconName: "list-remove"
-            enabled: base.hasCurrentItem && !base.currentItem.is_read_only && !base.isCurrentItemActivated && base.materialManager.canMaterialBeRemoved(base.currentItem.container_node)
+            enabled: base.hasCurrentItem && !base.currentItem.is_read_only && !base.isCurrentItemActivated && CuraApplication.getMaterialManager().canMaterialBeRemoved(base.currentItem.container_node)
             onClicked:
             {
                 forceActiveFocus();
@@ -138,6 +151,7 @@ Item
         // Import button
         Button
         {
+            id: importMenuButton
             text: catalog.i18nc("@action:button", "Import")
             iconName: "document-import"
             onClicked:
@@ -151,6 +165,7 @@ Item
         // Export button
         Button
         {
+            id: exportMenuButton
             text: catalog.i18nc("@action:button", "Export")
             iconName: "document-export"
             onClicked:
@@ -200,10 +215,15 @@ Item
             visible: text != ""
             text:
             {
-                var caption = catalog.i18nc("@action:label", "Printer") + ": " + Cura.MachineManager.activeMachineName;
+                var caption = catalog.i18nc("@action:label", "Printer") + ": " + Cura.MachineManager.activeMachine.name;
                 if (Cura.MachineManager.hasVariants)
                 {
-                    caption += ", " + Cura.MachineManager.activeDefinitionVariantsName + ": " + Cura.MachineManager.activeVariantName;
+                    var activeVariantName = ""
+                    if(Cura.MachineManager.activeStack != null)
+                    {
+                        activeVariantName = Cura.MachineManager.activeStack.variant.name
+                    }
+                    caption += ", " + Cura.MachineManager.activeDefinitionVariantsName + ": " + activeVariantName;
                 }
                 return caption;
             }
@@ -260,14 +280,16 @@ Item
         id: confirmRemoveMaterialDialog
         icon: StandardIcon.Question;
         title: catalog.i18nc("@title:window", "Confirm Remove")
-        text: catalog.i18nc("@label (%1 is object name)", "Are you sure you wish to remove %1? This cannot be undone!").arg(base.currentItem.name)
+        property string materialName: base.currentItem !== null ? base.currentItem.name : ""
+
+        text: catalog.i18nc("@label (%1 is object name)", "Are you sure you wish to remove %1? This cannot be undone!").arg(materialName)
         standardButtons: StandardButton.Yes | StandardButton.No
         modality: Qt.ApplicationModal
         onYes:
         {
             // Set the active material as the fallback. It will be selected when the current material is deleted
             base.newRootMaterialIdToSwitchTo = base.active_root_material_id
-            base.materialManager.removeMaterial(base.currentItem.container_node);
+            CuraApplication.getMaterialManager().removeMaterial(base.currentItem.container_node);
         }
     }
 
