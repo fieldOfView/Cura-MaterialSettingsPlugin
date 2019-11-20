@@ -85,7 +85,7 @@ UM.Dialog {
             model: MaterialSettingsPlugin.MaterialSettingDefinitionsModel
             {
                 id: definitionsModel;
-                containerId: Cura.MachineManager.activeDefinitionId
+                containerId: Cura.MachineManager.activeMachine.definition.id
                 visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
                 showAll: true
                 showAncestors: true

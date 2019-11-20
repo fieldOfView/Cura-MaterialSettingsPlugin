@@ -13,8 +13,6 @@ TabView
 {
     id: base
 
-    property QtObject materialManager: CuraApplication.getMaterialManager()
-
     property QtObject properties
     property var currentMaterialNode: null
 
@@ -24,6 +22,7 @@ TabView
     property real secondColumnWidth: (width * 0.40) | 0
     property string containerId: ""
     property var materialPreferenceValues: UM.Preferences.getValue("cura/material_settings") ? JSON.parse(UM.Preferences.getValue("cura/material_settings")) : {}
+    property var materialManagementModel: CuraApplication.getMaterialManagementModel()
 
     property double spoolLength: calculateSpoolLength()
     property real costPerMeter: calculateCostPerMeter()
@@ -428,7 +427,7 @@ TabView
 
         property var customStack: MaterialSettingsPlugin.CustomStack
         {
-            containerIds: [Cura.MachineManager.activeDefinitionId, Cura.MachineManager.activeVariantId, base.containerId]
+            containerIds: [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
         }
 
         ScrollView
@@ -463,7 +462,7 @@ TabView
                 model: UM.SettingDefinitionsModel
                 {
                     id: addedSettingsModel
-                    containerId: Cura.MachineManager.activeDefinitionId
+                    containerId: Cura.MachineManager.activeMachine.definition.id
                     visibilityHandler: Cura.MaterialSettingsVisibilityHandler { }
                     expanded: ["*"]
                 }
@@ -553,7 +552,7 @@ TabView
                         UM.SettingPropertyProvider
                         {
                             id: inheritStackProvider
-                            containerStackId: Cura.MachineManager.activeMachineId
+                            containerStackId: Cura.MachineManager.activeMachine.id
                             key: model.key
                             watchedProperties: [ "limit_to_extruder" ]
                         }
@@ -666,7 +665,7 @@ TabView
         }
 
         // update the values
-        base.materialManager.setMaterialName(base.currentMaterialNode, new_name)
+        base.materialManagementModel.setMaterialName(base.currentMaterialNode, new_name)
         properties.name = new_name
     }
 

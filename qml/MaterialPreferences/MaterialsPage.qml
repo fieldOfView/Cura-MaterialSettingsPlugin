@@ -93,7 +93,7 @@ Item
             id: activateMenuButton
             text: catalog.i18nc("@action:button", "Activate")
             iconName: "list-activate"
-            enabled: !isCurrentItemActivated && Cura.MachineManager.hasMaterials
+            enabled: !isCurrentItemActivated && Cura.MachineManager.activeMachine.hasMaterials
             onClicked:
             {
                 forceActiveFocus()
@@ -216,7 +216,7 @@ Item
             text:
             {
                 var caption = catalog.i18nc("@action:label", "Printer") + ": " + Cura.MachineManager.activeMachine.name;
-                if (Cura.MachineManager.hasVariants)
+                if (Cura.MachineManager.activeMachine.hasVariants)
                 {
                     var activeVariantName = ""
                     if(Cura.MachineManager.activeStack != null)
