@@ -22,7 +22,17 @@ TabView
     property real secondColumnWidth: (width * 0.40) | 0
     property string containerId: ""
     property var materialPreferenceValues: UM.Preferences.getValue("cura/material_settings") ? JSON.parse(UM.Preferences.getValue("cura/material_settings")) : {}
-    property var materialManagementModel: CuraApplication.getMaterialManagementModel()
+    property var materialManagement:
+    {
+        if(CuraApplication.getMaterialManagementModel)
+        {
+            return CuraApplication.getMaterialManagementModel()
+        }
+        else
+        {
+            return CuraApplication.getMaterialManager()
+        }
+    }
 
     property double spoolLength: calculateSpoolLength()
     property real costPerMeter: calculateCostPerMeter()
@@ -665,7 +675,7 @@ TabView
         }
 
         // update the values
-        base.materialManagementModel.setMaterialName(base.currentMaterialNode, new_name)
+        base.materialManagement.setMaterialName(base.currentMaterialNode, new_name)
         properties.name = new_name
     }
 
