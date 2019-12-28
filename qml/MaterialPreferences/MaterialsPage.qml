@@ -13,6 +13,18 @@ Item
 {
     id: base
 
+    property var materialManagement:
+    {
+        if(CuraApplication.getMaterialManagementModel)
+        {
+            return CuraApplication.getMaterialManagementModel()
+        }
+        else
+        {
+            return CuraApplication.getMaterialManager()
+        }
+    }
+
     // Keep PreferencesDialog happy
     property var resetEnabled: false
     property var currentItem: null
@@ -114,7 +126,7 @@ Item
             onClicked:
             {
                 forceActiveFocus();
-                base.newRootMaterialIdToSwitchTo = CuraApplication.getMaterialManager().createMaterial();
+                base.newRootMaterialIdToSwitchTo = base.materialManagement.createMaterial();
                 base.toActivateNewMaterial = true;
             }
         }
@@ -129,7 +141,7 @@ Item
             onClicked:
             {
                 forceActiveFocus();
-                base.newRootMaterialIdToSwitchTo = CuraApplication.getMaterialManager().duplicateMaterial(base.currentItem.container_node);
+                base.newRootMaterialIdToSwitchTo = base.materialManagement.duplicateMaterial(base.currentItem.container_node);
                 base.toActivateNewMaterial = true;
             }
         }
@@ -140,7 +152,7 @@ Item
             id: removeMenuButton
             text: catalog.i18nc("@action:button", "Remove")
             iconName: "list-remove"
-            enabled: base.hasCurrentItem && !base.currentItem.is_read_only && !base.isCurrentItemActivated && CuraApplication.getMaterialManager().canMaterialBeRemoved(base.currentItem.container_node)
+            enabled: base.hasCurrentItem && !base.currentItem.is_read_only && !base.isCurrentItemActivated && base.materialManagement.canMaterialBeRemoved(base.currentItem.container_node)
             onClicked:
             {
                 forceActiveFocus();
@@ -289,7 +301,7 @@ Item
         {
             // Set the active material as the fallback. It will be selected when the current material is deleted
             base.newRootMaterialIdToSwitchTo = base.active_root_material_id
-            CuraApplication.getMaterialManager().removeMaterial(base.currentItem.container_node);
+            base.materialManagement.removeMaterial(base.currentItem.container_node);
         }
     }
 
