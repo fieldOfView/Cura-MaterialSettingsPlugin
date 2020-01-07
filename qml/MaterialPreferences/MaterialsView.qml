@@ -443,6 +443,8 @@ TabView
         ScrollView
         {
             anchors.fill: parent;
+            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+            flickableItem.flickableDirection: Flickable.VerticalFlick
 
             Rectangle
             {
@@ -467,7 +469,6 @@ TabView
             {
                 width: parent.width
                 spacing: UM.Theme.getSize("default_lining").height
-                enabled: base.editingEnabled
 
                 model: UM.SettingDefinitionsModel
                 {
@@ -508,6 +509,16 @@ TabView
                             provider.containerStackId = customStack.stackId
                         }
 
+                        Connections
+                        {
+                            target: base
+                            onEditingEnabledChanged:
+                            {
+                                settingLoader.item.enabled = base.editingEnabled;
+                            }
+                        }
+
+
                         //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
                         //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
                         //causing nasty issues when selecting different options. So disable asynchronous loading of enum type completely.
@@ -519,6 +530,7 @@ TabView
                             settingLoader.item.showLinkedSettingIcon = false
                             settingLoader.item.doDepthIndentation = false
                             settingLoader.item.doQualityUserSettingEmphasis = false
+                            settingLoader.item.enabled = base.editingEnabled
                         }
 
                         sourceComponent:
