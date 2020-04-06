@@ -6,13 +6,14 @@ from UM.Application import Application
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
+from typing import List
 
 class CustomStackProxy(QObject):
 
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 
-        self._container_ids = []
+        self._container_ids = []  # type: List[str]
 
         self._stack = ContainerStack("CustomStack" + str(id(self)))
         self._stack_id = self._stack.id
@@ -25,7 +26,7 @@ class CustomStackProxy(QObject):
         return self._stack_id
 
     ##  Set the containerIds property.
-    def setContainerIds(self, container_ids):
+    def setContainerIds(self, container_ids: List[str]):
         if container_ids == self._container_ids:
             return
         self._container_ids = container_ids
