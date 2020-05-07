@@ -1,4 +1,4 @@
-# Copyright (c) 2019 fieldOfView
+# Copyright (c) 2020 fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 from UM.Settings.Models.SettingVisibilityHandler import SettingVisibilityHandler
