@@ -1,15 +1,21 @@
-# Copyright (c) 2019 fieldOfView
+# Copyright (c) 2020 fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 import os.path
 
-from cura.CuraApplication import CuraApplication
+from PyQt5.QtQml import qmlRegisterType
+from PyQt5.QtCore import QUrl
+
 from UM.Extension import Extension
 from UM.Resources import Resources
 from UM.Logger import Logger
+from cura.CuraApplication import CuraApplication
+from cura.Settings.ExtruderManager import ExtruderManager
 
-from PyQt5.QtQml import qmlRegisterType
-from PyQt5.QtCore import QUrl
+try:
+    from cura.Settings.CuraFormulaFunctions import CuraFormulaFunctions # Cura 3.6 and newer
+except ImportError:
+    from cura.Settings.CustomSettingFunctions import CustomSettingFunctions as CuraFormulaFunctions # Cura 3.5
 
 from . import MaterialSettingsPluginVisibilityHandler
 
@@ -17,7 +23,7 @@ from UM.i18n import i18nCatalog
 catalog = i18nCatalog("cura")
 
 class MaterialSettingsPlugin(Extension):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self._settings_dialog = None
@@ -43,7 +49,16 @@ class MaterialSettingsPlugin(Extension):
 
         CuraApplication.getInstance().engineCreatedSignal.connect(self._onEngineCreated)
 
-    def _onEngineCreated(self):
+        if hasattr(CuraFormulaFunctions, "getValueFromContainerAtIndex"):
+            api = CuraApplication.getInstance().getCuraAPI()
+            api.interface.settings.addContextMenuItem({
+               "name": catalog.i18nc("@item:inmenu", "Use value from material"),
+               "icon_name": "",
+               "actions": ["__call__"],
+               "menu_item": self.useValueFromMaterialContainer
+            })
+
+    def _onEngineCreated(self) -> None:
         qmlRegisterType(
             MaterialSettingsPluginVisibilityHandler.MaterialSettingsPluginVisibilityHandler,
             "Cura", 1, 0, "MaterialSettingsVisibilityHandler"
@@ -69,7 +84,38 @@ class MaterialSettingsPlugin(Extension):
         else:
             Logger.log("e", "Could not replace Materials preferencepane with patched version")
 
-    def showSettingsDialog(self):
+    def useValueFromMaterialContainer(self, kwargs) -> None:
+        try:
+            setting_key = kwargs["key"]
+        except KeyError:
+            return
+
+        global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
+        if not global_container_stack:
+            return
+
+        try:
+            material_container_index = global_container_stack.getContainers().index(global_container_stack.material)
+        except ValueError:
+            return
+
+        settable_per_extruder = global_container_stack.getProperty(setting_key, "settable_per_extruder")
+        resolve_value = global_container_stack.getProperty(setting_key, "resolve")
+        if not settable_per_extruder and resolve_value is None:
+            # todo: notify user
+            Logger.log("e", "Setting %s can not be set per material" % setting_key)
+            return
+
+        if settable_per_extruder:
+            value_string = "=extruderValueFromContainer(extruder_nr,\"%s\",%d)" %(setting_key, material_container_index)
+            ExtruderManager.getInstance().getActiveExtruderStack().userChanges.setProperty(setting_key, "value", value_string)
+        else:
+            active_extruder_index = ExtruderManager.getInstance().activeExtruderIndex
+            value_string = "=extruderValueFromContainer(%d,\"%s\",%d)" %(active_extruder_index, setting_key, material_container_index)
+            global_container_stack.userChanges.setProperty(setting_key, "value", value_string)
+
+
+    def showSettingsDialog(self) -> None:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "SettingsDialog.qml")
         self._settings_dialog = CuraApplication.getInstance().createQmlComponent(path, {"manager": self})
         self._settings_dialog.show()
