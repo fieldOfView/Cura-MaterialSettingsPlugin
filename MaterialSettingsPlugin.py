@@ -11,6 +11,7 @@ from UM.Resources import Resources
 from UM.Logger import Logger
 from cura.CuraApplication import CuraApplication
 from cura.Settings.ExtruderManager import ExtruderManager
+from cura.Settings.MaterialSettingsVisibilityHandler import MaterialSettingsVisibilityHandler
 
 try:
     from cura.Settings.CuraFormulaFunctions import CuraFormulaFunctions # Cura 3.6 and newer
@@ -31,16 +32,8 @@ class MaterialSettingsPlugin(Extension):
         self.setMenuName(catalog.i18nc("@item:inmenu", "Material Settings"))
         self.addMenuItem(catalog.i18nc("@item:inmenu", "Configure Material Settings"), self.showSettingsDialog)
 
-        default_material_settings = {
-            "default_material_print_temperature",
-            "default_material_bed_temperature",
-            "material_standby_temperature",
-            #"material_flow_temp_graph",
-            "cool_fan_speed",
-            "retraction_amount",
-            "retraction_speed",
-            "material_flow",
-        }
+        default_material_settings = list(MaterialSettingsVisibilityHandler().getVisible()) # the default list
+        default_material_settings.append("material_flow")
 
         CuraApplication.getInstance().getPreferences().addPreference(
             "material_settings/visible_settings",
