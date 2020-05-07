@@ -27,6 +27,10 @@ class MaterialSettingsPluginVisibilityHandler(SettingVisibilityHandler):
             return
 
         material_settings = set(visibility_string.split(";"))
+        try:
+            material_settings.remove("material_diameter")
+        except KeyError:
+            pass
         if material_settings != self.getVisible():
             self.setVisible(material_settings)
 

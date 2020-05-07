@@ -13,4 +13,7 @@ class MaterialSettingDefinitionsModel(SettingDefinitionsModel):
         if getattr(definition, "settable_per_extruder") == False and getattr(definition, "resolve") is None:
             return False
 
+        if definition.key == "material_diameter":
+            return False
+
         return super()._isDefinitionVisible(definition, **kwargs)
