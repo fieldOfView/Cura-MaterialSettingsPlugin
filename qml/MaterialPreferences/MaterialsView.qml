@@ -120,6 +120,7 @@ TabView
 
                     onYes:
                     {
+                        base.setContainerPropertyValue("material_diameter", properties.diameter, new_diameter_value);
                         base.setMetaDataEntry("approximate_diameter", old_approximate_diameter_value, getApproximateDiameter(new_diameter_value).toString());
                         base.setMetaDataEntry("properties/diameter", properties.diameter, new_diameter_value);
                         // CURA-6868 Make sure to update the extruder to user a diameter-compatible material.
@@ -260,6 +261,7 @@ TabView
                             confirmDiameterChangeDialog.open()
                         }
                         else {
+                            base.setContainerPropertyValue("material_diameter", properties.diameter, value);
                             base.setMetaDataEntry("approximate_diameter", old_approximate_diameter, getApproximateDiameter(value).toString());
                             base.setMetaDataEntry("properties/diameter", properties.diameter, value);
                         }
@@ -632,6 +634,17 @@ TabView
             var key = list[list.length - 1]
             properties[key] = new_value
         }
+    }
+
+    property var helper: MaterialSettingsPlugin.Helper{}
+    function setContainerPropertyValue(key, old_value, new_value)
+    {
+        if (old_value == new_value)
+        {
+            return;
+        }
+        var base_file = Cura.ContainerManager.getContainerMetaDataEntry(base.containerId, "base_file");
+        helper.setMaterialContainersPropertyValue(base_file, key, new_value);
     }
 
     function setMaterialPreferenceValue(material_guid, entry_name, new_value)
