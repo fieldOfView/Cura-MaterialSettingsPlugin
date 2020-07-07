@@ -1,4 +1,4 @@
-# Copyright (c) 2020 fieldOfView
+# Copyright (c) 2020 Aldo Hoeben / fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 import os.path
@@ -14,9 +14,11 @@ from cura.Settings.ExtruderManager import ExtruderManager
 from cura.Settings.MaterialSettingsVisibilityHandler import MaterialSettingsVisibilityHandler
 
 try:
-    from cura.Settings.CuraFormulaFunctions import CuraFormulaFunctions # Cura 3.6 and newer
+    # Cura 3.6 and newer
+    from cura.Settings.CuraFormulaFunctions import CuraFormulaFunctions
 except ImportError:
-    from cura.Settings.CustomSettingFunctions import CustomSettingFunctions as CuraFormulaFunctions # Cura 3.5
+    # Cura 3.5
+    from cura.Settings.CustomSettingFunctions import CustomSettingFunctions as CuraFormulaFunctions  # type: ignore
 
 from . import MaterialSettingsPluginVisibilityHandler
 
@@ -60,7 +62,11 @@ class MaterialSettingsPlugin(Extension):
         # Adding/removing pages from the preferences dialog is handles in QML
         # There is no way to access the preferences dialog directly, so we have to search for it
         preferencesDialog = None
-        for child in CuraApplication.getInstance().getMainWindow().contentItem().children():
+        main_window = CuraApplication.getInstance().getMainWindow()
+        if not main_window:
+            Logger.log("e", "Could not replace Materials preferencepane with patched version because there is no main window")
+            return
+        for child in main_window.contentItem().children():
             try:
                 test = child.setPage # only PreferencesDialog has a setPage function
                 preferencesDialog = child
@@ -111,4 +117,5 @@ class MaterialSettingsPlugin(Extension):
     def showSettingsDialog(self) -> None:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "SettingsDialog.qml")
         self._settings_dialog = CuraApplication.getInstance().createQmlComponent(path, {"manager": self})
-        self._settings_dialog.show()
+        if self._settings_dialog:
+            self._settings_dialog.show()
