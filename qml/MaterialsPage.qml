@@ -19,7 +19,7 @@ Item
     property var resetEnabled: false
     property var currentItem: null
 
-    property var materialManagementModel: 
+    property var materialManagementModel:
     {
         if(CuraApplication.getMaterialManagementModel)
         {

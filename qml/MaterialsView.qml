@@ -5,6 +5,7 @@
 
 import QtQuick 2.7
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.1
 import QtQuick.Dialogs 1.2
 
 import UM 1.2 as UM
@@ -385,13 +386,6 @@ TabView
     Tab
     {
         title: catalog.i18nc("@label", "Print settings")
-        anchors
-        {
-            leftMargin: UM.Theme.getSize("default_margin").width
-            topMargin: UM.Theme.getSize("default_margin").height
-            bottomMargin: UM.Theme.getSize("default_margin").height
-            rightMargin: 0
-        }
 
         Component
         {
@@ -440,149 +434,213 @@ TabView
             containerIds: [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
         }
 
-        ScrollView
+        Rectangle
         {
-            anchors.fill: parent;
-            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-            flickableItem.flickableDirection: Flickable.VerticalFlick
-
-            Rectangle
+            color:
             {
-                parent: viewport
-                anchors.fill: parent
-                color:
+                if(CuraSDKVersion >= "6.0.0")
                 {
-                    if(CuraSDKVersion >= "6.0.0")
+                    // version 4.0 and newer
+                    return UM.Theme.getColor("main_background")
+                }
+                else
+                {
+                    // version 3.6 and before
+                    return UM.Theme.getColor("sidebar")
+                }
+            }
+
+            ScrollView
+            {
+                id: materialSettingsScrollView
+                width: parent.width
+                anchors
+                {
+                    leftMargin: UM.Theme.getSize("default_margin").width
+                    top: parent.top
+                    topMargin: UM.Theme.getSize("default_margin").height
+                    bottom: customiseSettingsButton.top
+                    bottomMargin: UM.Theme.getSize("default_margin").height
+                }
+
+                horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+                flickableItem.flickableDirection: Flickable.VerticalFlick
+
+                ListView
+                {
+                    id: materialSettingsListView
+                    width: parent.width
+                    spacing: UM.Theme.getSize("default_lining").height
+
+                    model: UM.SettingDefinitionsModel
                     {
-                        // version 4.0 and newer
-                        return UM.Theme.getColor("main_background")
+                        id: addedSettingsModel
+                        containerId: Cura.MachineManager.activeMachine != null ? Cura.MachineManager.activeMachine.definition.id: ""
+                        visibilityHandler: Cura.MaterialSettingsVisibilityHandler { }
+                        expanded: ["*"]
                     }
-                    else
+
+                    delegate: Item
                     {
-                        // version 3.6 and before
-                        return UM.Theme.getColor("sidebar")
+                        height: childrenRect.height
+                        width: parent.width
+
+                        UM.TooltipArea
+                        {
+                            id: settingArea
+                            anchors.left: parent.left
+                            anchors.right: removeSettingButton.left
+                            height: childrenRect.height
+                            text: model.description
+
+                            Loader
+                            {
+                                id: settingLoader
+                                height: UM.Theme.getSize("section").height
+
+                                anchors.left: parent.left
+                                anchors.leftMargin: UM.Theme.getSize("default_margin").width
+                                anchors.right: parent.right
+
+                                property var definition: model
+                                property var settingDefinitionsModel: addedSettingsModel
+                                property var propertyProvider: provider
+                                property var globalPropertyProvider: inheritStackProvider
+                                property var externalResetHandler: resetToDefault
+
+                                function resetToDefault()
+                                {
+                                    customStack.removeInstanceFromTop(model.key)
+                                }
+
+                                Component.onCompleted:
+                                {
+                                    provider.containerStackId = customStack.stackId
+                                }
+
+                                Connections
+                                {
+                                    target: base
+                                    onEditingEnabledChanged:
+                                    {
+                                        settingLoader.item.enabled = base.editingEnabled;
+                                    }
+                                }
+
+
+                                //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
+                                //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
+                                //causing nasty issues when selecting different options. So disable asynchronous loading of enum type completely.
+                                asynchronous: model.type != "enum" && model.type != "extruder"
+
+                                onLoaded: {
+                                    settingLoader.item.showRevertButton = false
+                                    settingLoader.item.showInheritButton = false
+                                    settingLoader.item.showLinkedSettingIcon = false
+                                    settingLoader.item.doDepthIndentation = false
+                                    settingLoader.item.doQualityUserSettingEmphasis = false
+                                    settingLoader.item.enabled = base.editingEnabled
+                                }
+
+                                sourceComponent:
+                                {
+                                    switch(model.type)
+                                    {
+                                        case "int":
+                                            return settingTextField
+                                        case "[int]":
+                                            return settingTextField
+                                        case "float":
+                                            return settingTextField
+                                        case "enum":
+                                            return settingComboBox
+                                        case "extruder":
+                                            return settingExtruder
+                                        case "optional_extruder":
+                                            return settingOptionalExtruder
+                                        case "bool":
+                                            return settingCheckBox
+                                        case "str":
+                                            return settingTextField
+                                        case "category":
+                                            return settingCategory
+                                        default:
+                                            return settingUnknown
+                                    }
+                                }
+
+                                UM.SettingPropertyProvider
+                                {
+                                    id: provider
+                                    containerStackId: "" // to be specified when the component loads
+                                    key: model.key
+                                    storeIndex: 0
+                                    watchedProperties: [ "value", "enabled", "state", "validationState" ]
+                                }
+
+                                // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
+                                // so we bypass that to make a dedicated provider).
+                                UM.SettingPropertyProvider
+                                {
+                                    id: inheritStackProvider
+                                    containerStackId: Cura.MachineManager.activeMachine.id
+                                    key: model.key
+                                    watchedProperties: [ "limit_to_extruder" ]
+                                }
+                            }
+                        }
+
+                        Button
+                        {
+                            id: removeSettingButton
+                            width: Math.round(UM.Theme.getSize("setting").height / 2)
+                            height: UM.Theme.getSize("setting").height
+
+                            anchors.right: parent.right
+                            anchors.rightMargin: UM.Theme.getSize("default_margin").width
+
+                            onClicked: addedSettingsModel.visibilityHandler.setSettingVisibility(model.key, false)
+
+                            style: ButtonStyle
+                            {
+                                background: Item
+                                {
+                                    UM.RecolorImage
+                                    {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: parent.width
+                                        height: width
+                                        sourceSize.height: width
+                                        color: control.hovered ? UM.Theme.getColor("setting_control_button_hover") : UM.Theme.getColor("setting_control_button")
+                                        source: UM.Theme.getIcon("minus")
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            ListView
+            Cura.SecondaryButton
             {
-                width: parent.width
-                spacing: UM.Theme.getSize("default_lining").height
+                id: customiseSettingsButton
 
-                model: UM.SettingDefinitionsModel
+                anchors
                 {
-                    id: addedSettingsModel
-                    containerId: Cura.MachineManager.activeMachine != null ? Cura.MachineManager.activeMachine.definition.id: ""
-                    visibilityHandler: Cura.MaterialSettingsVisibilityHandler { }
-                    expanded: ["*"]
+                    left: parent.left
+                    leftMargin: UM.Theme.getSize("default_margin").width
+                    bottom: parent.bottom
+                    bottomMargin: UM.Theme.getSize("default_margin").height
                 }
 
-                delegate: UM.TooltipArea
-                {
-                    width: parent.width
-                    height: childrenRect.height
-                    text: model.description
+                text: catalog.i18nc("@action:button", "Select settings")
 
-                    Loader
-                    {
-                        id: settingLoader
-                        height: UM.Theme.getSize("section").height
-
-                        anchors.left: parent.left
-                        anchors.leftMargin: UM.Theme.getSize("default_margin").width
-                        anchors.right: parent.right
-
-                        property var definition: model
-                        property var settingDefinitionsModel: addedSettingsModel
-                        property var propertyProvider: provider
-                        property var globalPropertyProvider: inheritStackProvider
-                        property var externalResetHandler: resetToDefault
-
-                        function resetToDefault()
-                        {
-                            customStack.removeInstanceFromTop(model.key)
-                        }
-
-                        Component.onCompleted:
-                        {
-                            provider.containerStackId = customStack.stackId
-                        }
-
-                        Connections
-                        {
-                            target: base
-                            onEditingEnabledChanged:
-                            {
-                                settingLoader.item.enabled = base.editingEnabled;
-                            }
-                        }
-
-
-                        //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
-                        //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
-                        //causing nasty issues when selecting different options. So disable asynchronous loading of enum type completely.
-                        asynchronous: model.type != "enum" && model.type != "extruder"
-
-                        onLoaded: {
-                            settingLoader.item.showRevertButton = true
-                            settingLoader.item.showInheritButton = false
-                            settingLoader.item.showLinkedSettingIcon = false
-                            settingLoader.item.doDepthIndentation = false
-                            settingLoader.item.doQualityUserSettingEmphasis = false
-                            settingLoader.item.enabled = base.editingEnabled
-                        }
-
-                        sourceComponent:
-                        {
-                            switch(model.type)
-                            {
-                                case "int":
-                                    return settingTextField
-                                case "[int]":
-                                    return settingTextField
-                                case "float":
-                                    return settingTextField
-                                case "enum":
-                                    return settingComboBox
-                                case "extruder":
-                                    return settingExtruder
-                                case "optional_extruder":
-                                    return settingOptionalExtruder
-                                case "bool":
-                                    return settingCheckBox
-                                case "str":
-                                    return settingTextField
-                                case "category":
-                                    return settingCategory
-                                default:
-                                    return settingUnknown
-                            }
-                        }
-
-                        UM.SettingPropertyProvider
-                        {
-                            id: provider
-                            containerStackId: "" // to be specified when the component loads
-                            key: model.key
-                            storeIndex: 0
-                            watchedProperties: [ "value", "enabled", "state", "validationState" ]
-                        }
-
-                        // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
-                        // so we bypass that to make a dedicated provider).
-                        UM.SettingPropertyProvider
-                        {
-                            id: inheritStackProvider
-                            containerStackId: Cura.MachineManager.activeMachine.id
-                            key: model.key
-                            watchedProperties: [ "limit_to_extruder" ]
-                        }
-                    }
-                }
+                onClicked: settingPickDialog.visible = true
             }
         }
     }
+
+    SettingsDialog { id: settingPickDialog }
 
     function calculateSpoolLength(diameter, density, spoolWeight)
     {
