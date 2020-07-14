@@ -76,7 +76,7 @@ class MaterialSettingsPlugin(Extension):
 
         if preferencesDialog:
             Logger.log("d", "Replacing Materials preferencepane with patched version")
-            materialPreferences = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "MaterialPreferences", "MaterialsPage.qml"))
+            materialPreferences = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "MaterialsPage.qml"))
 
             preferencesDialog.removePage(3)
             preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferences.toString())
