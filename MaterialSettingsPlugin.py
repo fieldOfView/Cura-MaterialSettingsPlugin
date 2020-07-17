@@ -29,11 +29,6 @@ class MaterialSettingsPlugin(Extension):
     def __init__(self) -> None:
         super().__init__()
 
-        self._settings_dialog = None
-
-        self.setMenuName(catalog.i18nc("@item:inmenu", "Material Settings"))
-        self.addMenuItem(catalog.i18nc("@item:inmenu", "Configure Material Settings"), self.showSettingsDialog)
-
         default_material_settings = list(MaterialSettingsVisibilityHandler().getVisible()) # the default list
         default_material_settings.append("material_flow")
 
@@ -112,10 +107,3 @@ class MaterialSettingsPlugin(Extension):
             active_extruder_index = ExtruderManager.getInstance().activeExtruderIndex
             value_string = "=extruderValueFromContainer(%d,\"%s\",%d)" %(active_extruder_index, setting_key, material_container_index)
             global_container_stack.userChanges.setProperty(setting_key, "value", value_string)
-
-
-    def showSettingsDialog(self) -> None:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "SettingsDialog.qml")
-        self._settings_dialog = CuraApplication.getInstance().createQmlComponent(path, {"manager": self})
-        if self._settings_dialog:
-            self._settings_dialog.show()
