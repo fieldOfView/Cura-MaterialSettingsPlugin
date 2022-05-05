@@ -633,6 +633,7 @@ TabView
                     bottomMargin: UM.Theme.getSize("default_margin").height
                 }
 
+                enabled: base.editingEnabled
                 text: catalog.i18nc("@action:button", "Select settings")
 
                 onClicked: settingPickDialog.visible = true
