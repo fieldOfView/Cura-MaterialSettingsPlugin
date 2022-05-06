@@ -6,7 +6,10 @@ from . import MaterialSettingDefinitionsModel
 from . import CustomStackProxy
 from . import HelperProxy
 
-from PyQt5.QtQml import qmlRegisterType
+try:
+    from PyQt6.QtQml import qmlRegisterType
+except ImportError:
+    from PyQt5.QtQml import qmlRegisterType
 
 
 def getMetaData():

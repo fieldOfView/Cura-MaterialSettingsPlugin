@@ -3,8 +3,14 @@
 
 import os.path
 
-from PyQt5.QtQml import qmlRegisterType
-from PyQt5.QtCore import QUrl
+USE_QT5 = False
+try:
+    from PyQt6.QtQml import qmlRegisterType
+    from PyQt6.QtCore import QUrl
+except ImportError:
+    from PyQt5.QtQml import qmlRegisterType
+    from PyQt5.QtCore import QUrl
+    USE_QT5 = True
 
 from UM.Extension import Extension
 from UM.Resources import Resources
@@ -49,6 +55,7 @@ class MaterialSettingsPlugin(Extension):
             })
 
     def _onEngineCreated(self) -> None:
+        return
         qmlRegisterType(
             MaterialSettingsPluginVisibilityHandler.MaterialSettingsPluginVisibilityHandler,
             "Cura", 1, 0, "MaterialSettingsVisibilityHandler"
@@ -71,10 +78,14 @@ class MaterialSettingsPlugin(Extension):
 
         if preferencesDialog:
             Logger.log("d", "Replacing Materials preferencepane with patched version")
-            materialPreferences = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml", "MaterialsPage.qml"))
+
+            qml_folder = "qml" if not USE_QT5 else "qml_qt5"
+            materialPreferencesPage = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), qml_folder, "MaterialsPage.qml"))
+            if USE_QT5:
+                materialPreferencesPage = materialPreferencesPage.toString()
 
             preferencesDialog.removePage(3)
-            preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferences.toString())
+            preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferencesPage)
         else:
             Logger.log("e", "Could not replace Materials preferencepane with patched version")
 

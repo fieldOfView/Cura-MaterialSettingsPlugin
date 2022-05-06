@@ -1,10 +1,12 @@
 // Copyright (c) 2020 fieldOfView
 // The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
-import QtQuick 2.15
-import QtQuick.Controls 2.4
+import QtQuick 2.2
+import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.2
+import QtQuick.Window 2.2
 
-import UM 1.5 as UM
+import UM 1.2 as UM
 import Cura 1.0 as Cura
 import MaterialSettingsPlugin 1.0 as MaterialSettingsPlugin
 

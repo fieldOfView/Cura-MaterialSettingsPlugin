@@ -4,7 +4,10 @@
 from UM.Settings.ContainerStack import ContainerStack
 from UM.Application import Application
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
+try:
+    from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
+except ImportError:
+    from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
 from typing import List
 

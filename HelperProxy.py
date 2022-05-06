@@ -1,7 +1,10 @@
 # Copyright (c) 2020 fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
-from PyQt5.QtCore import QObject, pyqtSlot
+try:
+    from PyQt6.QtCore import QObject, pyqtSlot
+except ImportError:
+    from PyQt5.QtCore import QObject, pyqtSlot
 
 from cura.CuraApplication import CuraApplication
 
