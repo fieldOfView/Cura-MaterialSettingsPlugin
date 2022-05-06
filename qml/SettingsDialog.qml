@@ -1,4 +1,4 @@
-// Copyright (c) 2020 fieldOfView
+// Copyright (c) 2022 fieldOfView
 // The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 import QtQuick 2.15
@@ -14,6 +14,7 @@ UM.Dialog {
     title: catalog.i18nc("@title:window", "Select available Material Settings")
     width: screenScaleFactor * 360
 
+    backgroundColor: UM.Theme.getColor("background_1")
     onVisibilityChanged:
     {
         if(visible)
@@ -34,7 +35,7 @@ UM.Dialog {
         listview.model.filter = new_filter;
     }
 
-    TextField {
+    Cura.TextField {
         id: filterInput
 
         anchors {
@@ -49,7 +50,7 @@ UM.Dialog {
         onTextChanged: settingsDialog.updateFilter()
     }
 
-    CheckBox
+    UM.CheckBox
     {
         id: toggleShowAll
 
@@ -66,9 +67,9 @@ UM.Dialog {
         }
     }
 
-    ScrollView
+    ListView
     {
-        id: scrollView
+        id:listview
 
         anchors
         {
@@ -77,47 +78,47 @@ UM.Dialog {
             right: parent.right;
             bottom: parent.bottom;
         }
-        ListView
+
+        ScrollBar.vertical: UM.ScrollBar { id: scrollBar }
+        clip: true
+
+        model: MaterialSettingsPlugin.MaterialSettingDefinitionsModel
         {
-            id:listview
-            model: MaterialSettingsPlugin.MaterialSettingDefinitionsModel
+            id: definitionsModel;
+            containerId: Cura.MachineManager.activeMachine.definition.id
+            visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
+            showAll: true
+            showAncestors: true
+            expanded: [ "*" ]
+            exclude: [ "machine_settings", "command_line_settings" ]
+        }
+        delegate:Loader
+        {
+            id: loader
+
+            width: parent ? parent.width : undefined
+            height: model.type != undefined ? UM.Theme.getSize("section").height : 0;
+
+            property var definition: model
+            property var settingDefinitionsModel: definitionsModel
+
+            asynchronous: true
+            source:
             {
-                id: definitionsModel;
-                containerId: Cura.MachineManager.activeMachine.definition.id
-                visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
-                showAll: true
-                showAncestors: true
-                expanded: [ "*" ]
-                exclude: [ "machine_settings", "command_line_settings" ]
-            }
-            delegate:Loader
-            {
-                id: loader
-
-                width: parent.width
-                height: model.type != undefined ? UM.Theme.getSize("section").height : 0;
-
-                property var definition: model
-                property var settingDefinitionsModel: definitionsModel
-
-                asynchronous: true
-                source:
+                switch(model.type)
                 {
-                    switch(model.type)
-                    {
-                        case "category":
-                            return "SettingCategory.qml"
-                        default:
-                            return "SettingItem.qml"
-                    }
+                    case "category":
+                        return "SettingCategory.qml"
+                    default:
+                        return "SettingItem.qml"
                 }
             }
-            Component.onCompleted: settingsDialog.updateFilter()
         }
+        Component.onCompleted: settingsDialog.updateFilter()
     }
 
     rightButtons: [
-        Button {
+        Cura.TertiaryButton {
             text: catalog.i18nc("@action:button", "Close");
             onClicked: {
                 settingsDialog.visible = false;
