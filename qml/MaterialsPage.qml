@@ -108,7 +108,7 @@ UM.ManagementPage
         }
     ]
 
-    onHamburgeButtonClicked: {
+    onHamburgeButtonClicked: function(hamburger_button) {
         const hamburerButtonHeight = hamburger_button.height;
         menu.popup(hamburger_button, -menu.width + hamburger_button.width / 2, hamburger_button.height);
         // for some reason the height of the hamburger changes when opening the popup

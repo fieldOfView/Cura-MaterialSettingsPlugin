@@ -55,7 +55,6 @@ class MaterialSettingsPlugin(Extension):
             })
 
     def _onEngineCreated(self) -> None:
-        return
         qmlRegisterType(
             MaterialSettingsPluginVisibilityHandler.MaterialSettingsPluginVisibilityHandler,
             "Cura", 1, 0, "MaterialSettingsVisibilityHandler"

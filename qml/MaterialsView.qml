@@ -103,6 +103,7 @@ Item
                     right: parent.right
                     bottom: parent.bottom
                 }
+                visible: informationPage.visible
             }
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
             clip: true
@@ -518,11 +519,52 @@ Item
             }
         }
 
+        Component
+        {
+            id: settingTextField;
+            Cura.SettingTextField { }
+        }
+
+        Component
+        {
+            id: settingComboBox;
+            Cura.SettingComboBox { }
+        }
+
+        Component
+        {
+            id: settingExtruder;
+            Cura.SettingExtruder { }
+        }
+
+        Component
+        {
+            id: settingCheckBox;
+            Cura.SettingCheckBox { }
+        }
+
+        Component
+        {
+            id: settingCategory;
+            Cura.SettingCategory { }
+        }
+
+        Component
+        {
+            id: settingUnknown;
+            Cura.SettingUnknown { }
+        }
+
         ListView
         {
             id: settingsPage
             visible: pageSelectorTabRow.currentItem.activeView === "settings"
             clip: true
+
+            property var customStack: MaterialSettingsPlugin.CustomStack
+            {
+                containerIds: [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
+            }
 
             anchors
             {
@@ -538,7 +580,6 @@ Item
 
             ScrollBar.vertical: UM.ScrollBar
             {
-                id: settingScrollBar
                 parent: settingsPage.parent
                 anchors
                 {
@@ -546,9 +587,8 @@ Item
                     right: parent.right
                     bottom: parent.bottom
                 }
+                visible: settingsPage.visible
             }
-
-            property real columnWidth: Math.floor((width - settingScrollBar.width - UM.Theme.getSize("narrow_margin").width) / 2)
 
             model: UM.SettingDefinitionsModel
             {
@@ -557,76 +597,100 @@ Item
                 expanded: ["*"]
             }
 
-            delegate: UM.TooltipArea
+            delegate: Loader
             {
-                width: childrenRect.width
-                height: childrenRect.height
+                height: UM.Theme.getSize("section").height
 
-                UM.TooltipArea
+                anchors.left: parent.left
+                anchors.leftMargin: UM.Theme.getSize("default_margin").width
+                anchors.right: parent.right
+                anchors.rightMargin: UM.Theme.getSize("default_margin").width
+
+                property var definition: model
+                property var settingDefinitionsModel: settingsPage.model
+                property var propertyProvider: provider
+                property var globalPropertyProvider: inheritStackProvider
+                property var externalResetHandler: resetToDefault
+
+                function resetToDefault()
                 {
-                    anchors.fill: parent
-                    text: model.description
+                    settingsPage.customStack.removeInstanceFromTop(model.key)
                 }
-                UM.Label
+
+                Component.onCompleted:
                 {
-                    id: label
-                    width: settingsPage.columnWidth
-                    height: spinBox.height + UM.Theme.getSize("default_lining").height
-                    text: model.label
-                    elide: Text.ElideRight
-                    verticalAlignment: Qt.AlignVCenter
+                    provider.containerStackId = settingsPage.customStack.stackId
                 }
-                Cura.NumericTextFieldWithUnit
+
+                Connections
                 {
-                    id: spinBox
-                    anchors.left: label.right
-                    valueText:
+                    target: base
+                    function onEditingEnabledChanged()
                     {
-                        // In case the setting is not in the material...
-                        if (!isNaN(parseFloat(materialPropertyProvider.properties.value)))
-                        {
-                            return parseFloat(materialPropertyProvider.properties.value);
-                        }
-                        // ... we search in the variant, and if it is not there...
-                        if (!isNaN(parseFloat(variantPropertyProvider.properties.value)))
-                        {
-                            return parseFloat(variantPropertyProvider.properties.value);
-                        }
-                        // ... then look in the definition container.
-                        if (!isNaN(parseFloat(machinePropertyProvider.properties.value)))
-                        {
-                            return parseFloat(machinePropertyProvider.properties.value);
-                        }
-                        return 0;
+                        item.enabled = base.editingEnabled;
+                        item.showRevertButton = base.editingEnabled;
                     }
-                    width: settingsPage.columnWidth
-                    maximum: 99999
-                    unitText: model.unit
-                    decimals: model.unit == "mm" ? 2 : 0
-
-                    editingFinishedFunction: materialPropertyProvider.setPropertyValue("value", value)
                 }
 
-                UM.ContainerPropertyProvider
-                {
-                    id: materialPropertyProvider
-                    containerId: base.containerId
-                    watchedProperties: [ "value" ]
-                    key: model.key
+
+                //Qt5.4.2 and earlier has a bug where this causes a crash: https://bugreports.qt.io/browse/QTBUG-35989
+                //In addition, while it works for 5.5 and higher, the ordering of the actual combo box drop down changes,
+                //causing nasty issues when selecting different options. So disable asynchronous loading of enum type completely.
+                asynchronous: model.type != "enum" && model.type != "extruder"
+
+                onLoaded: {
+                    item.showRevertButton = base.editingEnabled
+                    item.showInheritButton = false
+                    item.showLinkedSettingIcon = false
+                    item.doDepthIndentation = false
+                    item.doQualityUserSettingEmphasis = false
+                    item.enabled = base.editingEnabled
                 }
-                UM.ContainerPropertyProvider
+
+                sourceComponent:
                 {
-                    id: variantPropertyProvider
-                    containerId: Cura.MachineManager.activeStack.variant.id
-                    watchedProperties: [ "value" ]
-                    key: model.key
+                    switch(model.type)
+                    {
+                        case "int":
+                            return settingTextField
+                        case "[int]":
+                            return settingTextField
+                        case "float":
+                            return settingTextField
+                        case "enum":
+                            return settingComboBox
+                        case "extruder":
+                            return settingExtruder
+                        case "optional_extruder":
+                            return settingOptionalExtruder
+                        case "bool":
+                            return settingCheckBox
+                        case "str":
+                            return settingTextField
+                        case "category":
+                            return settingCategory
+                        default:
+                            return settingUnknown
+                    }
                 }
-                UM.ContainerPropertyProvider
+
+                UM.SettingPropertyProvider
                 {
-                    id: machinePropertyProvider
-                    containerId: Cura.MachineManager.activeMachine != null ? Cura.MachineManager.activeMachine.definition.id: ""
-                    watchedProperties: ["value"]
+                    id: provider
+                    containerStackId: "" // to be specified when the component loads
                     key: model.key
+                    storeIndex: 0
+                    watchedProperties: [ "value", "enabled", "state", "validationState" ]
+                }
+
+                // Specialty provider that only watches global_inherits (we cant filter on what property changed we get events
+                // so we bypass that to make a dedicated provider).
+                UM.SettingPropertyProvider
+                {
+                    id: inheritStackProvider
+                    containerStackId: Cura.MachineManager.activeMachine.id
+                    key: model.key
+                    watchedProperties: [ "limit_to_extruder" ]
                 }
             }
         }
