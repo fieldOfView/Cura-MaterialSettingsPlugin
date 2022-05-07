@@ -589,34 +589,6 @@ TabView
                                 }
                             }
                         }
-
-                        Button
-                        {
-                            id: removeSettingButton
-                            width: Math.round(UM.Theme.getSize("setting").height / 2)
-                            height: UM.Theme.getSize("setting").height
-
-                            anchors.right: parent.right
-                            anchors.rightMargin: UM.Theme.getSize("default_margin").width
-
-                            onClicked: addedSettingsModel.visibilityHandler.setSettingVisibility(model.key, false)
-
-                            style: ButtonStyle
-                            {
-                                background: Item
-                                {
-                                    UM.RecolorImage
-                                    {
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        width: parent.width
-                                        height: width
-                                        sourceSize.height: width
-                                        color: control.hovered ? UM.Theme.getColor("setting_control_button_hover") : UM.Theme.getColor("setting_control_button")
-                                        source: UM.Theme.getIcon("minus")
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
