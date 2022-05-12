@@ -489,7 +489,7 @@ TabView
                         {
                             id: settingArea
                             anchors.left: parent.left
-                            anchors.right: removeSettingButton.left
+                            anchors.right: parent.right
                             height: childrenRect.height
                             text: model.description
 
@@ -524,6 +524,7 @@ TabView
                                     onEditingEnabledChanged:
                                     {
                                         settingLoader.item.enabled = base.editingEnabled;
+                                        settingLoader.item.showRevertButton = base.editingEnabled;
                                     }
                                 }
 
@@ -534,7 +535,7 @@ TabView
                                 asynchronous: model.type != "enum" && model.type != "extruder"
 
                                 onLoaded: {
-                                    settingLoader.item.showRevertButton = false
+                                    settingLoader.item.showRevertButton = base.editingEnabled
                                     settingLoader.item.showInheritButton = false
                                     settingLoader.item.showLinkedSettingIcon = false
                                     settingLoader.item.doDepthIndentation = false
