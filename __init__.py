@@ -7,8 +7,12 @@ from . import CustomStackProxy
 from . import HelperProxy
 
 try:
+    from cura.ApplicationMetadata import CuraSDKVersion
+except ImportError: # Cura <= 3.6
+    CuraSDKVersion = "6.0.0"
+if CuraSDKVersion >= "8.0.0":
     from PyQt6.QtQml import qmlRegisterType
-except ImportError:
+else:
     from PyQt5.QtQml import qmlRegisterType
 
 

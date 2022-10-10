@@ -3,11 +3,15 @@
 
 import os.path
 
-USE_QT5 = False
 try:
+    from cura.ApplicationMetadata import CuraSDKVersion
+except ImportError: # Cura <= 3.6
+    CuraSDKVersion = "6.0.0"
+USE_QT5 = False
+if CuraSDKVersion >= "8.0.0":
     from PyQt6.QtQml import qmlRegisterType
     from PyQt6.QtCore import QUrl
-except ImportError:
+else:
     from PyQt5.QtQml import qmlRegisterType
     from PyQt5.QtCore import QUrl
     USE_QT5 = True

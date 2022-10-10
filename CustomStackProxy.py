@@ -5,8 +5,12 @@ from UM.Settings.ContainerStack import ContainerStack
 from UM.Application import Application
 
 try:
+    from cura.ApplicationMetadata import CuraSDKVersion
+except ImportError: # Cura <= 3.6
+    CuraSDKVersion = "6.0.0"
+if CuraSDKVersion >= "8.0.0":
     from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
-except ImportError:
+else:
     from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
 from typing import List
