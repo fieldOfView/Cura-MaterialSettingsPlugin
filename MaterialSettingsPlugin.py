@@ -56,7 +56,7 @@ class MaterialSettingsPlugin(Extension):
         if hasattr(CuraFormulaFunctions, "getValueFromContainerAtIndex"):
             api = CuraApplication.getInstance().getCuraAPI()
             api.interface.settings.addContextMenuItem({
-               "name": catalog.i18nc("@item:inmenu", "Use value from material"),
+               "name": self._catalog.i18nc("@item:inmenu", "Use value from material"),
                "icon_name": "",
                "actions": ["__call__"],
                "menu_item": self.useValueFromMaterialContainer
