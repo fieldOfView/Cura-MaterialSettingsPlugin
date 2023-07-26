@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the Material Settings package.
+# This file is distributed under the same license as the Mesh Tools package.
 # 5axes <5axes@free.fr>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: Material Settings\n"
+"Project-Id-Version: Mesh Tools\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-07-26 07:41+0000\n"
-"PO-Revision-Date: 2023-07-26 09:46+0200\n"
+"PO-Revision-Date: 2023-07-26 09:57+0200\n"
 "Last-Translator: 5axes <5axes@free.fr>\n"
 "Language-Team: 5axes\n"
 "Language: fr\n"
@@ -26,25 +26,25 @@ msgstr "Utiliser la valeur du matériaux"
 #: resources/qml_qt6/MaterialsPage.qml:72
 msgctxt "@title:tab"
 msgid "Materials"
-msgstr ""
+msgstr "Matériaux"
 
 #: resources/qml_qt5/SettingsDialog.qml:16
 #: resources/qml_qt6/SettingsDialog.qml:14
 msgctxt "@title:window"
 msgid "Select available Material Settings"
-msgstr ""
+msgstr "Sélectionner les paramètres de matériau disponibles"
 
 #: resources/qml_qt5/SettingsDialog.qml:49
 #: resources/qml_qt6/SettingsDialog.qml:48
 msgctxt "@label:textbox"
 msgid "Filter..."
-msgstr ""
+msgstr "Filtre..."
 
 #: resources/qml_qt5/SettingsDialog.qml:63
 #: resources/qml_qt6/SettingsDialog.qml:62
 msgctxt "@label:checkbox"
 msgid "Show all"
-msgstr ""
+msgstr "Tout montrer"
 
 #: resources/qml_qt5/SettingsDialog.qml:123
 #: resources/qml_qt6/SettingsDialog.qml:122
@@ -56,53 +56,55 @@ msgstr "Fermer"
 #: resources/qml_qt6/MaterialsPage.qml:162
 msgctxt "@action:button"
 msgid "Activate"
-msgstr ""
+msgstr "Activer"
 
 #: resources/qml_qt5/MaterialsPage.qml:138
 msgctxt "@action:button"
 msgid "Create"
-msgstr ""
+msgstr "Créer"
 
 #: resources/qml_qt5/MaterialsPage.qml:153
 #: resources/qml_qt6/MaterialsPage.qml:176
 msgctxt "@action:button"
 msgid "Duplicate"
-msgstr ""
+msgstr "Dupliquer"
 
 #: resources/qml_qt5/MaterialsPage.qml:168
 #: resources/qml_qt6/MaterialsPage.qml:188
 msgctxt "@action:button"
 msgid "Remove"
-msgstr ""
+msgstr "Supprimer"
 
 #: resources/qml_qt5/MaterialsPage.qml:183
 #: resources/qml_qt6/MaterialsPage.qml:92
 msgctxt "@action:button"
 msgid "Import"
-msgstr ""
+msgstr "Importer"
 
 #: resources/qml_qt5/MaterialsPage.qml:197
 #: resources/qml_qt6/MaterialsPage.qml:200
 msgctxt "@action:button"
 msgid "Export"
-msgstr ""
+msgstr "Exporter"
 
 #: resources/qml_qt5/MaterialsPage.qml:246
 msgctxt "@action:label"
 msgid "Printer"
-msgstr ""
+msgstr "Imprimante"
 
 #: resources/qml_qt5/MaterialsPage.qml:310
 #: resources/qml_qt6/MaterialsPage.qml:214
 msgctxt "@title:window"
 msgid "Confirm Remove"
-msgstr ""
+msgstr "Confirmer la suppression"
 
 #: resources/qml_qt5/MaterialsPage.qml:313
 #: resources/qml_qt6/MaterialsPage.qml:217
 msgctxt "@label (%1 is object name)"
 msgid "Are you sure you wish to remove %1? This cannot be undone!"
 msgstr ""
+"Êtes-vous sûr de vouloir supprimer l'objet %1 ? Vous ne pourrez pas revenir "
+"en arrière !"
 
 #: resources/qml_qt5/MaterialsPage.qml:327
 #: resources/qml_qt5/MaterialsPage.qml:335
@@ -110,7 +112,7 @@ msgstr ""
 #: resources/qml_qt6/MaterialsPage.qml:240
 msgctxt "@title:window"
 msgid "Import Material"
-msgstr ""
+msgstr "Importer un matériau"
 
 #: resources/qml_qt5/MaterialsPage.qml:336
 #: resources/qml_qt6/MaterialsPage.qml:247
@@ -118,12 +120,14 @@ msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
 msgid ""
 "Could not import material <filename>%1</filename>: <message>%2</message>"
 msgstr ""
+"Impossible d'importer le matériau <filename>%1</filename> : <message>%"
+"2</message>"
 
 #: resources/qml_qt5/MaterialsPage.qml:340
 #: resources/qml_qt6/MaterialsPage.qml:244
 msgctxt "@info:status Don't translate the XML tag <filename>!"
 msgid "Successfully imported material <filename>%1</filename>"
-msgstr ""
+msgstr "Matériau <filename>%1</filename> importé avec succès"
 
 #: resources/qml_qt5/MaterialsPage.qml:358
 #: resources/qml_qt5/MaterialsPage.qml:366
@@ -131,7 +135,7 @@ msgstr ""
 #: resources/qml_qt6/MaterialsPage.qml:269
 msgctxt "@title:window"
 msgid "Export Material"
-msgstr ""
+msgstr "Exporter un matériau"
 
 #: resources/qml_qt5/MaterialsPage.qml:370
 #: resources/qml_qt6/MaterialsPage.qml:274
@@ -139,24 +143,26 @@ msgctxt "@info:status Don't translate the XML tags <filename> and <message>!"
 msgid ""
 "Failed to export material to <filename>%1</filename>: <message>%2</message>"
 msgstr ""
+"Échec de l'exportation de matériau vers <filename>%1</filename> : <message>%"
+"2</message>"
 
 #: resources/qml_qt5/MaterialsPage.qml:376
 #: resources/qml_qt6/MaterialsPage.qml:277
 msgctxt "@info:status Don't translate the XML tag <filename>!"
 msgid "Successfully exported material to <filename>%1</filename>"
-msgstr ""
+msgstr "Matériau exporté avec succès vers <filename>%1</filename>"
 
 #: resources/qml_qt5/MaterialsView.qml:84
 #: resources/qml_qt6/MaterialsView.qml:700
 msgctxt "@title"
 msgid "Information"
-msgstr ""
+msgstr "Information"
 
 #: resources/qml_qt5/MaterialsView.qml:113
 #: resources/qml_qt6/MaterialsView.qml:126
 msgctxt "@title:window"
 msgid "Confirm Diameter Change"
-msgstr ""
+msgstr "Confirmer le changement de diamètre"
 
 #: resources/qml_qt5/MaterialsView.qml:114
 #: resources/qml_qt6/MaterialsView.qml:127
@@ -165,128 +171,130 @@ msgid ""
 "The new filament diameter is set to %1 mm, which is not compatible with the "
 "current extruder. Do you wish to continue?"
 msgstr ""
+"Le nouveau diamètre de filament est réglé sur %1 mm, ce qui n'est pas "
+"compatible avec l'extrudeuse actuelle. Souhaitez-vous poursuivre ?"
 
 #: resources/qml_qt5/MaterialsView.qml:141
 #: resources/qml_qt6/MaterialsView.qml:157
 msgctxt "@label"
 msgid "Display Name"
-msgstr ""
+msgstr "Afficher le nom"
 
 #: resources/qml_qt5/MaterialsView.qml:151
 #: resources/qml_qt6/MaterialsView.qml:176
 msgctxt "@label"
 msgid "Brand"
-msgstr ""
+msgstr "Marque"
 
 #: resources/qml_qt5/MaterialsView.qml:161
 #: resources/qml_qt6/MaterialsView.qml:195
 msgctxt "@label"
 msgid "Material Type"
-msgstr ""
+msgstr "Type de matériau"
 
 #: resources/qml_qt5/MaterialsView.qml:171
 #: resources/qml_qt6/MaterialsView.qml:215
 msgctxt "@label"
 msgid "Color"
-msgstr ""
+msgstr "Couleur"
 
 #: resources/qml_qt5/MaterialsView.qml:221
 #: resources/qml_qt6/MaterialsView.qml:280
 msgctxt "@label"
 msgid "Properties"
-msgstr ""
+msgstr "Propriétés"
 
 #: resources/qml_qt5/MaterialsView.qml:223
 #: resources/qml_qt6/MaterialsView.qml:291
 msgctxt "@label"
 msgid "Density"
-msgstr ""
+msgstr "Densité"
 
 #: resources/qml_qt5/MaterialsView.qml:238
 #: resources/qml_qt6/MaterialsView.qml:324
 msgctxt "@label"
 msgid "Diameter"
-msgstr ""
+msgstr "Diamètre"
 
 #: resources/qml_qt5/MaterialsView.qml:273
 #: resources/qml_qt6/MaterialsView.qml:374
 msgctxt "@label"
 msgid "Filament Cost"
-msgstr ""
+msgstr "Coût du filament"
 
 #: resources/qml_qt5/MaterialsView.qml:290
 #: resources/qml_qt6/MaterialsView.qml:406
 msgctxt "@label"
 msgid "Filament weight"
-msgstr ""
+msgstr "Poids du filament"
 
 #: resources/qml_qt5/MaterialsView.qml:308
 #: resources/qml_qt6/MaterialsView.qml:438
 msgctxt "@label"
 msgid "Filament length"
-msgstr ""
+msgstr "Longueur du filament"
 
 #: resources/qml_qt5/MaterialsView.qml:317
 #: resources/qml_qt6/MaterialsView.qml:456
 msgctxt "@label"
 msgid "Cost per Meter"
-msgstr ""
+msgstr "Coût au mètre"
 
 #: resources/qml_qt5/MaterialsView.qml:331
 #: resources/qml_qt6/MaterialsView.qml:470
 msgctxt "@label"
 msgid "This material is linked to %1 and shares some of its properties."
-msgstr ""
+msgstr "Ce matériau est lié à %1 et partage certaines de ses propriétés."
 
 #: resources/qml_qt5/MaterialsView.qml:338
 #: resources/qml_qt6/MaterialsView.qml:477
 msgctxt "@label"
 msgid "Unlink Material"
-msgstr ""
+msgstr "Délier le matériau"
 
 #: resources/qml_qt5/MaterialsView.qml:349
 #: resources/qml_qt6/MaterialsView.qml:490
 msgctxt "@label"
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: resources/qml_qt5/MaterialsView.qml:362
 #: resources/qml_qt6/MaterialsView.qml:508
 msgctxt "@label"
 msgid "Adhesion Information"
-msgstr ""
+msgstr "Informations d'adhérence"
 
 #: resources/qml_qt5/MaterialsView.qml:388
 #: resources/qml_qt6/MaterialsView.qml:705
 msgctxt "@label"
 msgid "Print settings"
-msgstr ""
+msgstr "Paramètres d'impression"
 
 #: resources/qml_qt5/MaterialsView.qml:610
 #: resources/qml_qt6/MaterialsView.qml:548
 msgctxt "@action:button"
 msgid "Select settings"
-msgstr ""
+msgstr "Sélectionnez les paramètres"
 
 #: resources/qml_qt6/MaterialsPage.qml:74
 msgctxt "@label"
 msgid "Materials compatible with active printer:"
-msgstr ""
+msgstr "Matériaux compatibles avec l'imprimante active :"
 
 #: resources/qml_qt6/MaterialsPage.qml:80
 msgctxt "@action:button"
 msgid "Create new"
-msgstr ""
+msgstr "Créer nouveau"
 
 #: resources/qml_qt6/MaterialsPage.qml:103
 msgctxt "@action:button"
 msgid "Sync with Printers"
-msgstr ""
+msgstr "Synchroniser avec imprimantes"
 
 #: resources/qml_qt6/MaterialsView.qml:267
 msgctxt "@title"
 msgid "Material color picker"
-msgstr ""
+msgstr "Sélecteur de couleur de matériau"
 
 #~ msgctxt "@item:inmenu"
 #~ msgid "Reload model"

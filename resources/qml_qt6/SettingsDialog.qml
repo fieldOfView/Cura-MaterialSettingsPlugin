@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Aldo Hoeben / fieldOfView
+// Copyright (c) 2023 Aldo Hoeben / fieldOfView
 // The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 import QtQuick 2.15
@@ -128,6 +128,6 @@ UM.Dialog {
 
     Item
     {
-        UM.I18nCatalog { id: catalog; name: "cura"; }
+        UM.I18nCatalog { id: catalog; name: "materialsettings"; }
     }
 }

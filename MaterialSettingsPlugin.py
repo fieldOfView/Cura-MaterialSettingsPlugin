@@ -1,4 +1,4 @@
-# Copyright (c) 2022 Aldo Hoeben / fieldOfView
+# Copyright (c) 2023 Aldo Hoeben / fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 import os.path
@@ -84,7 +84,7 @@ class MaterialSettingsPlugin(Extension):
                 pass
 
         if preferencesDialog:
-            Logger.log("d", "Replacing Materials preferencepane with patched version")
+            Logger.log("d", "Replacing Materials preference pane with patched version")
 
             qml_folder = "qml_qt6" if not USE_QT5 else "qml_qt5"
             materialPreferencesPage = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"resources", qml_folder, "MaterialsPage.qml"))
@@ -92,7 +92,7 @@ class MaterialSettingsPlugin(Extension):
                 materialPreferencesPage = materialPreferencesPage.toString()
 
             preferencesDialog.removePage(3)
-            preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferencesPage)
+            preferencesDialog.insertPage(3, self._catalog.i18nc("@title:tab", "Materials"), materialPreferencesPage)
         else:
             Logger.log("e", "Could not replace Materials preferencepane with patched version")
 

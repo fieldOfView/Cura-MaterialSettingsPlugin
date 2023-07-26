@@ -129,6 +129,6 @@ UM.Dialog {
 
     Item
     {
-        UM.I18nCatalog { id: catalog; name: "cura"; }
+        UM.I18nCatalog { id: catalog; name: "materialsettings"; }
     }
 }
