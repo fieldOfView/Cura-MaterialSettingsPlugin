@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Material Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-26 08:03+0000\n"
+"POT-Creation-Date: 2023-07-26 08:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: MaterialSettingsPlugin.py:59
+#: MaterialSettingsPlugin.py:65
 msgctxt "@item:inmenu"
 msgid "Use value from material"
 msgstr ""
 
-#: MaterialSettingsPlugin.py:95 resources/qml_qt5/MaterialsPage.qml:101
+#: MaterialSettingsPlugin.py:101 resources/qml_qt5/MaterialsPage.qml:101
 #: resources/qml_qt6/MaterialsPage.qml:72
 msgctxt "@title:tab"
 msgid "Materials"
