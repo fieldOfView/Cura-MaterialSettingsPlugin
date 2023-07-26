@@ -743,7 +743,11 @@ Item
         Cura.SettingUnknown { }
     }
 
-
+	Item
+    {
+        UM.I18nCatalog { id: catalog; name: "materialsettings"; }
+    }
+    
     SettingsDialog { id: settingPickDialog }
 
     function updateCostPerMeter()

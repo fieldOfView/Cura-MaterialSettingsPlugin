@@ -283,4 +283,8 @@ UM.ManagementPage
             }
         }
     }
+	Item
+    {
+        UM.I18nCatalog { id: catalog; name: "materialsettings"; }
+    }
 }

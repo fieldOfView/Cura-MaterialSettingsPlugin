@@ -613,7 +613,11 @@ TabView
             }
         }
     }
-
+	Item
+    {
+        UM.I18nCatalog { id: catalog; name: "materialsettings"; }
+    }
+	
     SettingsDialog { id: settingPickDialog }
 
     function calculateSpoolLength(diameter, density, spoolWeight)

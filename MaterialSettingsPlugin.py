@@ -29,7 +29,13 @@ except ImportError:
 from . import MaterialSettingsPluginVisibilityHandler
 
 from UM.i18n import i18nCatalog
-catalog = i18nCatalog("cura")
+Resources.addSearchPath(
+    os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        "resources"
+    )
+)  # Plugin translation file import
+catalog = i18nCatalog("materialsettings")
 
 class MaterialSettingsPlugin(Extension):
     def __init__(self) -> None:
