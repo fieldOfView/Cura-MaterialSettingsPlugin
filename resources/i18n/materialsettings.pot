@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Material Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-25 23:23+0000\n"
+"POT-Creation-Date: 2023-07-26 07:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,5 +16,274 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+#: MaterialSettingsPlugin.py:59
+msgctxt "@item:inmenu"
+msgid "Use value from material"
+msgstr ""
+
+#: MaterialSettingsPlugin.py:95 resources/qml_qt5/MaterialsPage.qml:101
+#: resources/qml_qt6/MaterialsPage.qml:72
+msgctxt "@title:tab"
+msgid "Materials"
+msgstr ""
+
+#: resources/qml_qt5/SettingsDialog.qml:16
+#: resources/qml_qt6/SettingsDialog.qml:14
+msgctxt "@title:window"
+msgid "Select available Material Settings"
+msgstr ""
+
+#: resources/qml_qt5/SettingsDialog.qml:49
+#: resources/qml_qt6/SettingsDialog.qml:48
+msgctxt "@label:textbox"
+msgid "Filter..."
+msgstr ""
+
+#: resources/qml_qt5/SettingsDialog.qml:63
+#: resources/qml_qt6/SettingsDialog.qml:62
+msgctxt "@label:checkbox"
+msgid "Show all"
+msgstr ""
+
+#: resources/qml_qt5/SettingsDialog.qml:123
+#: resources/qml_qt6/SettingsDialog.qml:122
+msgctxt "@action:button"
+msgid "Close"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:120
+#: resources/qml_qt6/MaterialsPage.qml:162
+msgctxt "@action:button"
+msgid "Activate"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:138
+msgctxt "@action:button"
+msgid "Create"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:153
+#: resources/qml_qt6/MaterialsPage.qml:176
+msgctxt "@action:button"
+msgid "Duplicate"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:168
+#: resources/qml_qt6/MaterialsPage.qml:188
+msgctxt "@action:button"
+msgid "Remove"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:183
+#: resources/qml_qt6/MaterialsPage.qml:92
+msgctxt "@action:button"
+msgid "Import"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:197
+#: resources/qml_qt6/MaterialsPage.qml:200
+msgctxt "@action:button"
+msgid "Export"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:246
+msgctxt "@action:label"
+msgid "Printer"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:310
+#: resources/qml_qt6/MaterialsPage.qml:214
+msgctxt "@title:window"
+msgid "Confirm Remove"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:313
+#: resources/qml_qt6/MaterialsPage.qml:217
+msgctxt "@label (%1 is object name)"
+msgid "Are you sure you wish to remove %1? This cannot be undone!"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:327
+#: resources/qml_qt5/MaterialsPage.qml:335
+#: resources/qml_qt6/MaterialsPage.qml:230
+#: resources/qml_qt6/MaterialsPage.qml:240
+msgctxt "@title:window"
+msgid "Import Material"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:336
+#: resources/qml_qt6/MaterialsPage.qml:247
+msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
+msgid ""
+"Could not import material <filename>%1</filename>: <message>%2</message>"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:340
+#: resources/qml_qt6/MaterialsPage.qml:244
+msgctxt "@info:status Don't translate the XML tag <filename>!"
+msgid "Successfully imported material <filename>%1</filename>"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:358
+#: resources/qml_qt5/MaterialsPage.qml:366
+#: resources/qml_qt6/MaterialsPage.qml:258
+#: resources/qml_qt6/MaterialsPage.qml:269
+msgctxt "@title:window"
+msgid "Export Material"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:370
+#: resources/qml_qt6/MaterialsPage.qml:274
+msgctxt "@info:status Don't translate the XML tags <filename> and <message>!"
+msgid ""
+"Failed to export material to <filename>%1</filename>: <message>%2</message>"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsPage.qml:376
+#: resources/qml_qt6/MaterialsPage.qml:277
+msgctxt "@info:status Don't translate the XML tag <filename>!"
+msgid "Successfully exported material to <filename>%1</filename>"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:84
+#: resources/qml_qt6/MaterialsView.qml:700
+msgctxt "@title"
+msgid "Information"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:113
+#: resources/qml_qt6/MaterialsView.qml:126
+msgctxt "@title:window"
+msgid "Confirm Diameter Change"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:114
+#: resources/qml_qt6/MaterialsView.qml:127
+msgctxt "@label (%1 is a number)"
+msgid ""
+"The new filament diameter is set to %1 mm, which is not compatible with the "
+"current extruder. Do you wish to continue?"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:141
+#: resources/qml_qt6/MaterialsView.qml:157
+msgctxt "@label"
+msgid "Display Name"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:151
+#: resources/qml_qt6/MaterialsView.qml:176
+msgctxt "@label"
+msgid "Brand"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:161
+#: resources/qml_qt6/MaterialsView.qml:195
+msgctxt "@label"
+msgid "Material Type"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:171
+#: resources/qml_qt6/MaterialsView.qml:215
+msgctxt "@label"
+msgid "Color"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:221
+#: resources/qml_qt6/MaterialsView.qml:280
+msgctxt "@label"
+msgid "Properties"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:223
+#: resources/qml_qt6/MaterialsView.qml:291
+msgctxt "@label"
+msgid "Density"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:238
+#: resources/qml_qt6/MaterialsView.qml:324
+msgctxt "@label"
+msgid "Diameter"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:273
+#: resources/qml_qt6/MaterialsView.qml:374
+msgctxt "@label"
+msgid "Filament Cost"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:290
+#: resources/qml_qt6/MaterialsView.qml:406
+msgctxt "@label"
+msgid "Filament weight"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:308
+#: resources/qml_qt6/MaterialsView.qml:438
+msgctxt "@label"
+msgid "Filament length"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:317
+#: resources/qml_qt6/MaterialsView.qml:456
+msgctxt "@label"
+msgid "Cost per Meter"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:331
+#: resources/qml_qt6/MaterialsView.qml:470
+msgctxt "@label"
+msgid "This material is linked to %1 and shares some of its properties."
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:338
+#: resources/qml_qt6/MaterialsView.qml:477
+msgctxt "@label"
+msgid "Unlink Material"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:349
+#: resources/qml_qt6/MaterialsView.qml:490
+msgctxt "@label"
+msgid "Description"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:362
+#: resources/qml_qt6/MaterialsView.qml:508
+msgctxt "@label"
+msgid "Adhesion Information"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:388
+#: resources/qml_qt6/MaterialsView.qml:705
+msgctxt "@label"
+msgid "Print settings"
+msgstr ""
+
+#: resources/qml_qt5/MaterialsView.qml:610
+#: resources/qml_qt6/MaterialsView.qml:548
+msgctxt "@action:button"
+msgid "Select settings"
+msgstr ""
+
+#: resources/qml_qt6/MaterialsPage.qml:74
+msgctxt "@label"
+msgid "Materials compatible with active printer:"
+msgstr ""
+
+#: resources/qml_qt6/MaterialsPage.qml:80
+msgctxt "@action:button"
+msgid "Create new"
+msgstr ""
+
+#: resources/qml_qt6/MaterialsPage.qml:103
+msgctxt "@action:button"
+msgid "Sync with Printers"
+msgstr ""
+
+#: resources/qml_qt6/MaterialsView.qml:267
+msgctxt "@title"
+msgid "Material color picker"
+msgstr ""
