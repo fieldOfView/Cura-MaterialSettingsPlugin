@@ -35,6 +35,14 @@ class MaterialSettingsPlugin(Extension):
     def __init__(self) -> None:
         super().__init__()
 
+        Resources.addSearchPath(
+            os.path.join(
+                os.path.abspath(os.path.dirname(__file__)),
+                "resources"
+            )
+        )  # Plugin translation file import
+        self._catalog = i18nCatalog("materialsettings")  
+        
         default_material_settings = list(MaterialSettingsVisibilityHandler().getVisible()) # the default list
         default_material_settings.append("material_flow")
 
@@ -78,8 +86,8 @@ class MaterialSettingsPlugin(Extension):
         if preferencesDialog:
             Logger.log("d", "Replacing Materials preferencepane with patched version")
 
-            qml_folder = "qml" if not USE_QT5 else "qml_qt5"
-            materialPreferencesPage = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), qml_folder, "MaterialsPage.qml"))
+            qml_folder = "qml_qt6" if not USE_QT5 else "qml_qt5"
+            materialPreferencesPage = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"resources", qml_folder, "MaterialsPage.qml"))
             if USE_QT5:
                 materialPreferencesPage = materialPreferencesPage.toString()
 
