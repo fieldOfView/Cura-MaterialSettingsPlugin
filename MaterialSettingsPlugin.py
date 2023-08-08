@@ -17,7 +17,6 @@ else:
     USE_QT5 = True
 
 from UM.Extension import Extension
-from UM.Resources import Resources
 from UM.Logger import Logger
 from cura.CuraApplication import CuraApplication
 from cura.Settings.ExtruderManager import ExtruderManager
@@ -30,10 +29,12 @@ except ImportError:
     # Cura 3.5
     from cura.Settings.CustomSettingFunctions import CustomSettingFunctions as CuraFormulaFunctions  # type: ignore
 
-from . import MaterialSettingsPluginVisibilityHandler
+from .MaterialSettingsPluginVisibilityHandler import MaterialSettingsPluginVisibilityHandler
+from .MaterialSettingsProxy import MaterialSettingsProxy
 
 from UM.i18n import i18nCatalog
 catalog = i18nCatalog("cura")
+
 
 class MaterialSettingsPlugin(Extension):
     def __init__(self) -> None:
@@ -49,6 +50,7 @@ class MaterialSettingsPlugin(Extension):
 
         CuraApplication.getInstance().engineCreatedSignal.connect(self._onEngineCreated)
 
+        # Add item to settings list context menu
         if hasattr(CuraFormulaFunctions, "getValueFromContainerAtIndex"):
             api = CuraApplication.getInstance().getCuraAPI()
             api.interface.settings.addContextMenuItem({
@@ -58,9 +60,20 @@ class MaterialSettingsPlugin(Extension):
                "menu_item": self.useValueFromMaterialContainer
             })
 
+        self._proxy = MaterialSettingsProxy()
+
     def _onEngineCreated(self) -> None:
+        # Make MaterialSettingsProxy available without using qmlRegisterSingletonType
+        try:
+            qml_engine = CuraApplication.getInstance()._qml_engine
+        except AttributeError:
+            qml_engine = CuraApplication.getInstance()._engine
+
+        qml_engine.rootContext().setContextProperty("MaterialSettingsPlugin", self._proxy)
+
+        # Override the exiting Cura.MaterialSettingsVisibilityHandler
         qmlRegisterType(
-            MaterialSettingsPluginVisibilityHandler.MaterialSettingsPluginVisibilityHandler,
+            MaterialSettingsPluginVisibilityHandler,
             "Cura", 1, 0, "MaterialSettingsVisibilityHandler"
         )
 
@@ -73,24 +86,29 @@ class MaterialSettingsPlugin(Extension):
             return
         for child in main_window.contentItem().children():
             try:
-                test = child.setPage # only PreferencesDialog has a setPage function
+                test = child.setPage  # only PreferencesDialog has a setPage function
                 preferencesDialog = child
                 break
             except:
                 pass
 
-        if preferencesDialog:
-            Logger.log("d", "Replacing Materials preferencepane with patched version")
-
-            qml_folder = "qml" if not USE_QT5 else "qml_qt5"
-            materialPreferencesPage = QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), qml_folder, "MaterialsPage.qml"))
-            if USE_QT5:
-                materialPreferencesPage = materialPreferencesPage.toString()
-
-            preferencesDialog.removePage(3)
-            preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferencesPage)
-        else:
+        if not preferencesDialog:
             Logger.log("e", "Could not replace Materials preferencepane with patched version")
+            return
+
+        Logger.log("d", "Replacing Materials preferencepane with patched version")
+
+        qml_folder = "qml" if not USE_QT5 else "qml_qt5"
+        materialPreferencesPage = QUrl.fromLocalFile(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            qml_folder,
+            "MaterialsPage.qml"
+        ))
+        if USE_QT5:
+            materialPreferencesPage = materialPreferencesPage.toString()
+
+        preferencesDialog.removePage(3)
+        preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferencesPage)
 
     def useValueFromMaterialContainer(self, kwargs) -> None:
         try:

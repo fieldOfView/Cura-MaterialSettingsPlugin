@@ -6,7 +6,6 @@ import QtQuick.Controls 2.4
 
 import UM 1.5 as UM
 import Cura 1.0 as Cura
-import MaterialSettingsPlugin 1.0 as MaterialSettingsPlugin
 
 UM.Dialog {
     id: settingsDialog
@@ -82,16 +81,20 @@ UM.Dialog {
         ScrollBar.vertical: UM.ScrollBar { id: scrollBar }
         clip: true
 
-        model: MaterialSettingsPlugin.MaterialSettingDefinitionsModel
+        property var visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
+        property var definitionsModel:
         {
-            id: definitionsModel;
-            containerId: Cura.MachineManager.activeMachine.definition.id
-            visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
-            showAll: true
-            showAncestors: true
-            expanded: [ "*" ]
-            exclude: [ "machine_settings", "command_line_settings" ]
+            var model = MaterialSettingsPlugin.makeMaterialSettingDefinitionsModel()
+            model.containerId = Cura.MachineManager.activeMachine.definition.id
+            model.visibilityHandler = visibilityHandler
+            model.showAll = true
+            model.showAncestors = true
+            model.expanded = [ "*" ]
+            model.exclude = [ "machine_settings", "command_line_settings" ]
+            return model
         }
+        model: definitionsModel
+
         delegate:Loader
         {
             id: loader
@@ -100,7 +103,7 @@ UM.Dialog {
             height: model.type != undefined ? UM.Theme.getSize("section").height : 0;
 
             property var definition: model
-            property var settingDefinitionsModel: definitionsModel
+            property var settingDefinitionsModel: listview.definitionsModel
 
             asynchronous: true
             source:

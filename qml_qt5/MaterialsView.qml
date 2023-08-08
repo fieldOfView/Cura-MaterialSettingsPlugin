@@ -10,7 +10,6 @@ import QtQuick.Dialogs 1.2
 
 import UM 1.2 as UM
 import Cura 1.0 as Cura
-import MaterialSettingsPlugin 1.0 as MaterialSettingsPlugin
 
 TabView
 {
@@ -429,9 +428,11 @@ TabView
             Cura.SettingUnknown { }
         }
 
-        property var customStack: MaterialSettingsPlugin.CustomStack
+        property var customStack:
         {
-            containerIds: [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
+            var stack = MaterialSettingsPlugin.makeCustomStack()
+            stack.containerIds = [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
+            return stack
         }
 
         Rectangle
@@ -668,7 +669,6 @@ TabView
         }
     }
 
-    property var helper: MaterialSettingsPlugin.Helper{}
     function setContainerPropertyValue(key, old_value, new_value)
     {
         if (old_value == new_value)
@@ -676,7 +676,7 @@ TabView
             return;
         }
         var base_file = Cura.ContainerManager.getContainerMetaDataEntry(base.containerId, "base_file");
-        helper.setMaterialContainersPropertyValue(base_file, key, new_value);
+        MaterialSettingsPlugin.setMaterialContainersPropertyValue(base_file, key, new_value);
     }
 
     function setMaterialPreferenceValue(material_guid, entry_name, new_value)

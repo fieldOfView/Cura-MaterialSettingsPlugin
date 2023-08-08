@@ -11,8 +11,6 @@ import QtQuick.Dialogs
 import UM 1.5 as UM
 import Cura 1.0 as Cura
 
-import MaterialSettingsPlugin 1.0 as MaterialSettingsPlugin
-
 Item
 {
     id: base
@@ -555,9 +553,11 @@ Item
                 id: settingsPage
                 clip: true
 
-                property var customStack: MaterialSettingsPlugin.CustomStack
+                property var customStack:
                 {
-                    containerIds: [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
+                    var stack = MaterialSettingsPlugin.makeCustomStack()
+                    stack.containerIds = [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
+                    return stack
                 }
 
                 anchors
