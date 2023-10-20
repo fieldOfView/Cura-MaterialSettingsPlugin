@@ -259,12 +259,23 @@ Item
 
                         // popup dialog to select a new color
                         // if successful it sets the properties.color_code value to the new color
-                        Cura.ColorDialog
+                        Loader
                         {
                             id: colorDialog
-                            title: catalog.i18nc("@title", "Material color picker")
-                            color: properties.color_code
-                            onAccepted: base.setMetaDataEntry("color_code", properties.color_code, color)
+
+                            source:
+                            {
+                                if(CuraSDKVersion <= "8.4.0") {
+                                    return "ColorDialog50.qml";
+                                } else {
+                                    return "ColorDialog55.qml";
+                                }
+                            }
+
+                            function open()
+                            {
+                                item.open()
+                            }
                         }
                     }
                 }
