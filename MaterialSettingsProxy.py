@@ -6,10 +6,8 @@ try:
 except ImportError:  # Cura <= 3.6
     CuraSDKVersion = "6.0.0"
 if CuraSDKVersion >= "8.0.0":
-    from PyQt6.QtQml import qmlRegisterType
     from PyQt6.QtCore import QObject, pyqtSlot
 else:
-    from PyQt5.QtQml import qmlRegisterType
     from PyQt5.QtCore import QObject, pyqtSlot
 
 from cura.CuraApplication import CuraApplication
@@ -21,7 +19,6 @@ from .CustomStackProxy import CustomStackProxy
 
 
 class MaterialSettingsProxy(QObject):
-
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 
@@ -30,14 +27,12 @@ class MaterialSettingsProxy(QObject):
 
     @pyqtSlot(result=QObject)
     def makeCustomStack(self) -> Optional["QObject"]:
-        print("???????????? make CustomStack")
         stack = CustomStackProxy()
         stack.destroyed.connect(self._forgetCustomStack)
         self._custom_stacks.append(stack)
         return stack
 
     def _forgetCustomStack(self, stack):
-        print("???????????? forget CustomStack")
         stack.destroyed.disconnect(self._forgetCustomStack)
         try:
             self._custom_stacks.remove(stack)
@@ -46,14 +41,12 @@ class MaterialSettingsProxy(QObject):
 
     @pyqtSlot(result=QObject)
     def makeMaterialSettingDefinitionsModel(self) -> Optional["QObject"]:
-        print("!!!!!!!!!!!! make MaterialSettingDefinitionsModel")
         model = MaterialSettingDefinitionsModel()
         model.destroyed.connect(self._forgetMaterialSettingDefinitionsModel)
         self._material_setting_definitions_models.append(model)
         return model
 
     def _forgetMaterialSettingDefinitionsModel(self, model):
-        print("!!!!!!!!!!!! forget MaterialSettingDefinitionsModel")
         model.destroyed.disconnect(self._forgetMaterialSettingDefinitionsModel)
         try:
             self._material_setting_definitions_models.remove(model)

@@ -40,7 +40,7 @@ class MaterialSettingsPlugin(Extension):
     def __init__(self) -> None:
         super().__init__()
 
-        default_material_settings = list(MaterialSettingsVisibilityHandler().getVisible()) # the default list
+        default_material_settings = list(MaterialSettingsVisibilityHandler().getVisible())  # the default list
         default_material_settings.append("material_flow")
 
         CuraApplication.getInstance().getPreferences().addPreference(

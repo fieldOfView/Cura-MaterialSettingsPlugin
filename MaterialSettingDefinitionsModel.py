@@ -3,10 +3,10 @@
 
 from UM.Settings.Models.SettingDefinitionsModel import SettingDefinitionsModel
 
-class MaterialSettingDefinitionsModel(SettingDefinitionsModel):
 
-    def __init__(self, parent = None, *args, **kwargs):
-        super().__init__(parent = parent, *args, **kwargs)
+class MaterialSettingDefinitionsModel(SettingDefinitionsModel):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
 
     def _isDefinitionVisible(self, definition, **kwargs):
         # filter out any setting that is irrelevant for an extruder/material

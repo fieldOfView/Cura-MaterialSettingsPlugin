@@ -6,7 +6,7 @@ from UM.Application import Application
 
 try:
     from cura.ApplicationMetadata import CuraSDKVersion
-except ImportError: # Cura <= 3.6
+except ImportError:  # Cura <= 3.6
     CuraSDKVersion = "6.0.0"
 if CuraSDKVersion >= "8.0.0":
     from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
@@ -15,8 +15,8 @@ else:
 
 from typing import List
 
-class CustomStackProxy(QObject):
 
+class CustomStackProxy(QObject):
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 
@@ -28,11 +28,11 @@ class CustomStackProxy(QObject):
 
         Application.getInstance().getContainerRegistry().addContainer(self._stack)
 
-    @pyqtProperty(str, constant = True)
+    @pyqtProperty(str, constant=True)
     def stackId(self):
         return self._stack_id
 
-    ##  Set the containerIds property.
+    # Set the containerIds property.
     def setContainerIds(self, container_ids: List[str]):
         if container_ids == self._container_ids:
             return
@@ -42,7 +42,7 @@ class CustomStackProxy(QObject):
             self._stack.removeContainer(0)
 
         for container_id in container_ids:
-            containers = Application.getInstance().getContainerRegistry().findContainers(id = container_id)
+            containers = Application.getInstance().getContainerRegistry().findContainers(id=container_id)
             if containers:
                 self._stack.addContainer(containers[0])
 
@@ -50,11 +50,11 @@ class CustomStackProxy(QObject):
 
         self.containerIdsChanged.emit()
 
-    ##  Emitted when the containerIds property changes.
+    # Emitted when the containerIds property changes.
     containerIdsChanged = pyqtSignal()
 
-    ##  The ID of the container we should query for property values.
-    @pyqtProperty("QVariantList", fset = setContainerIds, notify = containerIdsChanged)
+    # The ID of the container we should query for property values.
+    @pyqtProperty("QVariantList", fset=setContainerIds, notify=containerIdsChanged)
     def containerIds(self):
         return self._container_ids
 

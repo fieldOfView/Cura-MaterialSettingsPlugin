@@ -6,16 +6,16 @@ from UM.Application import Application
 
 from UM.FlameProfiler import pyqtSlot
 
+
 class MaterialSettingsPluginVisibilityHandler(SettingVisibilityHandler):
-    def __init__(self, parent = None, *args, **kwargs):
-        super().__init__(parent = parent, *args, **kwargs)
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
 
         self._preferences = Application.getInstance().getPreferences()
         self._preferences.preferenceChanged.connect(self._onPreferencesChanged)
 
         self._onPreferencesChanged("material_settings/visible_settings")
         self.visibilityChanged.connect(self._updatePreference)
-
 
     def _onPreferencesChanged(self, name: str) -> None:
         if name != "material_settings/visible_settings":
@@ -38,8 +38,7 @@ class MaterialSettingsPluginVisibilityHandler(SettingVisibilityHandler):
         visibility_string = ";".join(self.getVisible())
         self._preferences.setValue("material_settings/visible_settings", visibility_string)
 
-
-    ##  Set a single SettingDefinition's visible state
+    # Set a single SettingDefinition's visible state
     @pyqtSlot(str, bool)
     def setSettingVisibility(self, key: str, visible: bool) -> None:
         visible_settings = self.getVisible()
