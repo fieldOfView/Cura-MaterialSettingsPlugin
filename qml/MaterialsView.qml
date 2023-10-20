@@ -24,7 +24,7 @@ Item
     property var materialPreferenceValues: UM.Preferences.getValue("cura/material_settings") ? JSON.parse(UM.Preferences.getValue("cura/material_settings")) : {}
     property var materialManagementModel: CuraApplication.getMaterialManagementModel()
 
-    property var visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
+    property var visibilityHandler: MaterialSettingsPlugin.makeVisibilityHandler()
 
     property double spoolLength: calculateSpoolLength()
     property real costPerMeter: calculateCostPerMeter()

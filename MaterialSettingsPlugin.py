@@ -9,10 +9,8 @@ except ImportError: # Cura <= 3.6
     CuraSDKVersion = "6.0.0"
 USE_QT5 = False
 if CuraSDKVersion >= "8.0.0":
-    from PyQt6.QtQml import qmlRegisterType
     from PyQt6.QtCore import QUrl
 else:
-    from PyQt5.QtQml import qmlRegisterType
     from PyQt5.QtCore import QUrl
     USE_QT5 = True
 
@@ -70,12 +68,6 @@ class MaterialSettingsPlugin(Extension):
             qml_engine = CuraApplication.getInstance()._engine
 
         qml_engine.rootContext().setContextProperty("MaterialSettingsPlugin", self._proxy)
-
-        # Override the exiting Cura.MaterialSettingsVisibilityHandler
-        qmlRegisterType(
-            MaterialSettingsPluginVisibilityHandler,
-            "Cura", 1, 0, "MaterialSettingsVisibilityHandler"
-        )
 
         # Adding/removing pages from the preferences dialog is handles in QML
         # There is no way to access the preferences dialog directly, so we have to search for it
