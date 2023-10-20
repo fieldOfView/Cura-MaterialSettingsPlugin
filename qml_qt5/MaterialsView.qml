@@ -20,9 +20,13 @@ TabView
 
     property bool editingEnabled: false
     property string currency: UM.Preferences.getValue("cura/currency") ? UM.Preferences.getValue("cura/currency") : "€"
+
     property real firstColumnWidth: (width * 0.50) | 0
     property real secondColumnWidth: (width * 0.40) | 0
     property string containerId: ""
+
+    property var visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
+
     property var materialPreferenceValues: UM.Preferences.getValue("cura/material_settings") ? JSON.parse(UM.Preferences.getValue("cura/material_settings")) : {}
     property var materialManagementModel:
     {
@@ -477,7 +481,7 @@ TabView
                     {
                         id: addedSettingsModel
                         containerId: Cura.MachineManager.activeMachine != null ? Cura.MachineManager.activeMachine.definition.id: ""
-                        visibilityHandler: Cura.MaterialSettingsVisibilityHandler { }
+                        visibilityHandler: base.visibilityHandler
                         expanded: ["*"]
                     }
 
@@ -615,7 +619,11 @@ TabView
         }
     }
 
-    SettingsDialog { id: settingPickDialog }
+    SettingsDialog
+    {
+        id: settingPickDialog
+        visibilityHandler: base.visibilityHandler
+    }
 
     function calculateSpoolLength(diameter, density, spoolWeight)
     {

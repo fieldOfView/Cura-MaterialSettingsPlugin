@@ -14,6 +14,9 @@ UM.Dialog {
     width: screenScaleFactor * 360
 
     backgroundColor: UM.Theme.getColor("background_1")
+
+    property var visibilityHandler
+
     onVisibilityChanged:
     {
         if(visible)
@@ -81,12 +84,11 @@ UM.Dialog {
         ScrollBar.vertical: UM.ScrollBar { id: scrollBar }
         clip: true
 
-        property var visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
         property var definitionsModel:
         {
             var model = MaterialSettingsPlugin.makeMaterialSettingDefinitionsModel()
             model.containerId = Cura.MachineManager.activeMachine.definition.id
-            model.visibilityHandler = visibilityHandler
+            model.visibilityHandler = settingsDialog.visibilityHandler
             model.showAll = true
             model.showAncestors = true
             model.expanded = [ "*" ]

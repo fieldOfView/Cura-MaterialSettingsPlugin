@@ -25,7 +25,7 @@ UM.TooltipArea
 
         onClicked:
         {
-            definitionsModel.visibilityHandler.setSettingVisibility(model.key, checked);
+            listview.definitionsModel.visibilityHandler.setSettingVisibility(model.key, checked);
         }
     }
 }

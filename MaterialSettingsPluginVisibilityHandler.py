@@ -12,15 +12,11 @@ class MaterialSettingsPluginVisibilityHandler(SettingVisibilityHandler):
         super().__init__(parent=parent, *args, **kwargs)
 
         self._preferences = Application.getInstance().getPreferences()
-        self._preferences.preferenceChanged.connect(self._onPreferencesChanged)
 
-        self._onPreferencesChanged("material_settings/visible_settings")
+        self._loadPreferredSettings()
         self.visibilityChanged.connect(self._updatePreference)
 
-    def _onPreferencesChanged(self, name: str) -> None:
-        if name != "material_settings/visible_settings":
-            return
-
+    def _loadPreferredSettings(self) -> None:
         visibility_string = self._preferences.getValue("material_settings/visible_settings")
         if not visibility_string:
             self._preferences.resetPreference("material_settings/visible_settings")
@@ -31,6 +27,7 @@ class MaterialSettingsPluginVisibilityHandler(SettingVisibilityHandler):
             material_settings.remove("material_diameter")
         except KeyError:
             pass
+
         if material_settings != self.getVisible():
             self.setVisible(material_settings)
 

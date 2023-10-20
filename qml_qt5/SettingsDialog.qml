@@ -15,6 +15,8 @@ UM.Dialog {
     title: catalog.i18nc("@title:window", "Select available Material Settings")
     width: screenScaleFactor * 360
 
+    property var visibilityHandler
+
     onVisibilityChanged:
     {
         if(visible)
@@ -82,12 +84,11 @@ UM.Dialog {
         {
             id:listview
 
-            property var visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
             property var definitionsModel:
             {
                 var model = MaterialSettingsPlugin.makeMaterialSettingDefinitionsModel()
                 model.containerId = Cura.MachineManager.activeMachine.definition.id
-                model.visibilityHandler = visibilityHandler
+                model.visibilityHandler = settingsDialog.visibilityHandler
                 model.showAll = true
                 model.showAncestors = true
                 model.expanded = [ "*" ]

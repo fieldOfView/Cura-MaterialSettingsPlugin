@@ -24,6 +24,8 @@ Item
     property var materialPreferenceValues: UM.Preferences.getValue("cura/material_settings") ? JSON.parse(UM.Preferences.getValue("cura/material_settings")) : {}
     property var materialManagementModel: CuraApplication.getMaterialManagementModel()
 
+    property var visibilityHandler: Cura.MaterialSettingsVisibilityHandler {}
+
     property double spoolLength: calculateSpoolLength()
     property real costPerMeter: calculateCostPerMeter()
 
@@ -599,7 +601,7 @@ Item
                 model: UM.SettingDefinitionsModel
                 {
                     containerId: Cura.MachineManager.activeMachine != null ? Cura.MachineManager.activeMachine.definition.id: ""
-                    visibilityHandler: Cura.MaterialSettingsVisibilityHandler { }
+                    visibilityHandler: base.visibilityHandler
                     expanded: ["*"]
                 }
 
@@ -755,7 +757,11 @@ Item
     }
 
 
-    SettingsDialog { id: settingPickDialog }
+    SettingsDialog
+    {
+        id: settingPickDialog
+        visibilityHandler: base.visibilityHandler
+    }
 
     function updateCostPerMeter()
     {
