@@ -569,7 +569,11 @@ Item
                 property var customStack:
                 {
                     var stack = MaterialSettingsPlugin.makeCustomStack()
-                    stack.containerIds = [Cura.MachineManager.activeMachine.definition.id, Cura.MachineManager.activeStack.variant.id, base.containerId]
+                    stack.containerIds = Qt.binding(function() { return [
+                        Cura.MachineManager.activeMachine.definition.id,
+                        Cura.MachineManager.activeStack.variant.id,
+                        base.containerId
+                    ]})
                     return stack
                 }
 
