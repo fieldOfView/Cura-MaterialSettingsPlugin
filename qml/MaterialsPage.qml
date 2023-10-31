@@ -282,5 +282,7 @@ UM.ManagementPage
                 CuraApplication.setDefaultPath("dialog_material_path", currentFolder);
             }
         }
+
+        UM.I18nCatalog { id: catalog; name: "cura" }
     }
 }
