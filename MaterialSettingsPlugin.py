@@ -41,6 +41,7 @@ from .MaterialSettingsProxy import MaterialSettingsProxy
 
 from UM.i18n import i18nCatalog
 catalog = i18nCatalog("cura")
+uranium_catalog = i18nCatalog("uranium")
 
 
 class MaterialSettingsPlugin(Extension):
@@ -145,9 +146,10 @@ class MaterialSettingsPlugin(Extension):
             if content_item is None:
                 return
 
-            # Check window title for "Preferences"
+            # Check window title for localized "Preferences"
             title = window.title() if hasattr(window, 'title') else ""
-            if "Preferences" not in str(title):
+            preferences_title = uranium_catalog.i18nc("@title:window", "Preferences")
+            if preferences_title not in str(title):
                 return
 
             Logger.log("d", "Found Preferences window, attempting to patch...")
