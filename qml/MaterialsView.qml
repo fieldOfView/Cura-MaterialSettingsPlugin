@@ -637,6 +637,15 @@ Item
                     Connections
                     {
                         target: base
+                        function onContainerIdChanged()
+                        {
+                            provider.containerStackId = settingsPage.customStack.stackId
+                        }
+                    }
+
+                    Connections
+                    {
+                        target: base
                         function onEditingEnabledChanged()
                         {
                             item.enabled = base.editingEnabled;
