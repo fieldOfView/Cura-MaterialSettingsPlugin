@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Aldo Hoeben / fieldOfView
+# Copyright (c) 2026 Aldo Hoeben / fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 from UM.Settings.ContainerStack import ContainerStack
@@ -24,7 +24,7 @@ class CustomStackProxy(QObject):
 
         self._stack = ContainerStack("CustomStack" + str(id(self)))
         self._stack_id = self._stack.id
-        self._stack.setDirty(False) # never save this stack
+        self._stack.setDirty(False)  # never save this stack
 
         Application.getInstance().getContainerRegistry().addContainer(self._stack)
 
@@ -38,15 +38,19 @@ class CustomStackProxy(QObject):
             return
         self._container_ids = container_ids
 
-        while(self._stack.getContainers()):
+        while self._stack.getContainers():
             self._stack.removeContainer(0)
 
         for container_id in container_ids:
-            containers = Application.getInstance().getContainerRegistry().findContainers(id=container_id)
+            containers = (
+                Application.getInstance()
+                .getContainerRegistry()
+                .findContainers(id=container_id)
+            )
             if containers:
                 self._stack.addContainer(containers[0])
 
-        self._stack.setDirty(False) # never save this stack
+        self._stack.setDirty(False)  # never save this stack
 
         self.containerIdsChanged.emit()
 

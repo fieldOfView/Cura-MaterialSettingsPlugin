@@ -1,25 +1,24 @@
-# Copyright (c) 2023 Aldo Hoeben / fieldOfView
+# Copyright (c) 2026 Aldo Hoeben / fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 import os.path
 
 try:
     from cura.ApplicationMetadata import CuraSDKVersion
-except ImportError: # Cura <= 3.6
+except ImportError:  # Cura <= 3.6
     CuraSDKVersion = "6.0.0"
 
 USE_QT5 = False
-# Cura 5.11 uses SDK 8.11.0 and has a new PreferencesDialog without removePage/insertPage
-USE_NEW_PREFERENCES_DIALOG = CuraSDKVersion >= "8.11.0"
 
 if CuraSDKVersion >= "8.0.0":
-    from PyQt6.QtCore import QUrl, QObject, pyqtProperty, pyqtSignal, QTimer
+    from PyQt6.QtCore import QUrl, pyqtProperty, QTimer
     from PyQt6.QtGui import QGuiApplication
     from PyQt6.QtQml import qmlRegisterType
 else:
-    from PyQt5.QtCore import QUrl, QObject, pyqtProperty, pyqtSignal, QTimer
+    from PyQt5.QtCore import QUrl, pyqtProperty, QTimer
     from PyQt5.QtGui import QGuiApplication
     from PyQt5.QtQml import qmlRegisterType
+
     USE_QT5 = True
 
 from UM.Extension import Extension
@@ -27,7 +26,9 @@ from UM.Logger import Logger
 from UM.Resources import Resources
 from cura.CuraApplication import CuraApplication
 from cura.Settings.ExtruderManager import ExtruderManager
-from cura.Settings.MaterialSettingsVisibilityHandler import MaterialSettingsVisibilityHandler
+from cura.Settings.MaterialSettingsVisibilityHandler import (
+    MaterialSettingsVisibilityHandler,
+)
 
 try:
     # Cura 3.6 and newer
@@ -36,10 +37,13 @@ except ImportError:
     # Cura 3.5
     from cura.Settings.CustomSettingFunctions import CustomSettingFunctions as CuraFormulaFunctions  # type: ignore
 
-from .MaterialSettingsPluginVisibilityHandler import MaterialSettingsPluginVisibilityHandler
+from .MaterialSettingsPluginVisibilityHandler import (
+    MaterialSettingsPluginVisibilityHandler,
+)
 from .MaterialSettingsProxy import MaterialSettingsProxy
 
 from UM.i18n import i18nCatalog
+
 catalog = i18nCatalog("cura")
 uranium_catalog = i18nCatalog("uranium")
 
@@ -48,12 +52,13 @@ class MaterialSettingsPlugin(Extension):
     def __init__(self) -> None:
         super().__init__()
 
-        default_material_settings = list(MaterialSettingsVisibilityHandler().getVisible())  # the default list
+        default_material_settings = list(
+            MaterialSettingsVisibilityHandler().getVisible()
+        )  # the default list
         default_material_settings.append("material_flow")
 
         CuraApplication.getInstance().getPreferences().addPreference(
-            "material_settings/visible_settings",
-            ";".join(default_material_settings)
+            "material_settings/visible_settings", ";".join(default_material_settings)
         )
 
         CuraApplication.getInstance().engineCreatedSignal.connect(self._onEngineCreated)
@@ -61,12 +66,14 @@ class MaterialSettingsPlugin(Extension):
         # Add item to settings list context menu
         if hasattr(CuraFormulaFunctions, "getValueFromContainerAtIndex"):
             api = CuraApplication.getInstance().getCuraAPI()
-            api.interface.settings.addContextMenuItem({
-               "name": catalog.i18nc("@item:inmenu", "Use value from material"),
-               "icon_name": "",
-               "actions": ["__call__"],
-               "menu_item": self.useValueFromMaterialContainer
-            })
+            api.interface.settings.addContextMenuItem(
+                {
+                    "name": catalog.i18nc("@item:inmenu", "Use value from material"),
+                    "icon_name": "",
+                    "actions": ["__call__"],
+                    "menu_item": self.useValueFromMaterialContainer,
+                }
+            )
 
         self._proxy = MaterialSettingsProxy()
 
@@ -77,16 +84,20 @@ class MaterialSettingsPlugin(Extension):
         except AttributeError:
             qml_engine = CuraApplication.getInstance()._engine
 
-        qml_engine.rootContext().setContextProperty("MaterialSettingsPlugin", self._proxy)
+        qml_engine.rootContext().setContextProperty(
+            "MaterialSettingsPlugin", self._proxy
+        )
 
         qml_folder = "qml" if not USE_QT5 else "qml_qt5"
-        self._materials_page_path = QUrl.fromLocalFile(os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            qml_folder,
-            "MaterialsPage.qml"
-        ))
+        self._materials_page_path = QUrl.fromLocalFile(
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                qml_folder,
+                "MaterialsPage.qml",
+            )
+        )
 
-        if USE_NEW_PREFERENCES_DIALOG:
+        if CuraSDKVersion >= "8.11.0":
             # Cura 5.11+: New PreferencesDialog without removePage/insertPage
             # We need to hook into dialog creation and modify the Materials page
             self._setupNewPreferencesDialogHook()
@@ -96,7 +107,9 @@ class MaterialSettingsPlugin(Extension):
 
     def _setupNewPreferencesDialogHook(self) -> None:
         """Setup hook for Cura 5.11+ PreferencesDialog that uses hardcoded page list."""
-        Logger.log("d", "Setting up MaterialSettingsPlugin for Cura 5.11+ PreferencesDialog")
+        Logger.log(
+            "d", "Setting up MaterialSettingsPlugin for Cura 5.11+ PreferencesDialog"
+        )
 
         self._patched_dialogs = set()  # Track dialogs we've already patched
 
@@ -114,13 +127,17 @@ class MaterialSettingsPlugin(Extension):
 
         qml_engine.rootContext().setContextProperty(
             "MaterialSettingsPluginMaterialsPagePath",
-            self._materials_page_path.toString()
+            self._materials_page_path.toString(),
         )
 
         # Connect to focus window changes to detect new dialog windows
         # UM.Dialog creates a separate window, not a child of the main window
-        QGuiApplication.instance().focusWindowChanged.connect(self._onFocusWindowChanged)
-        Logger.log("d", "Connected to focusWindowChanged for preference dialog detection")
+        QGuiApplication.instance().focusWindowChanged.connect(
+            self._onFocusWindowChanged
+        )
+        Logger.log(
+            "d", "Connected to focusWindowChanged for preference dialog detection"
+        )
 
     def _onFocusWindowChanged(self, window) -> None:
         """Called when focus changes to a different window (e.g., new dialog opened)."""
@@ -142,12 +159,14 @@ class MaterialSettingsPlugin(Extension):
 
         try:
             # Get the contentItem of the window (for QQuickWindow)
-            content_item = window.contentItem() if hasattr(window, 'contentItem') else None
+            content_item = (
+                window.contentItem() if hasattr(window, "contentItem") else None
+            )
             if content_item is None:
                 return
 
             # Check window title for localized "Preferences"
-            title = window.title() if hasattr(window, 'title') else ""
+            title = window.title() if hasattr(window, "title") else ""
             preferences_title = uranium_catalog.i18nc("@title:window", "Preferences")
             if preferences_title not in str(title):
                 return
@@ -170,9 +189,9 @@ class MaterialSettingsPlugin(Extension):
         try:
             # For QQuickItem, use childItems() to get visual children
             # For QObject, use children() to get QObject children
-            if hasattr(parent, 'childItems'):
+            if hasattr(parent, "childItems"):
                 children = list(parent.childItems())
-            elif hasattr(parent, 'children'):
+            elif hasattr(parent, "children"):
                 children = list(parent.children())
             else:
                 children = []
@@ -180,16 +199,22 @@ class MaterialSettingsPlugin(Extension):
             for child in children:
                 # Check if this child has model and currentIndex (ListView characteristics)
                 try:
-                    model = child.property("model") if hasattr(child, 'property') else None
+                    model = (
+                        child.property("model") if hasattr(child, "property") else None
+                    )
 
                     if model is not None:
                         # Verify it's the page list by checking model structure
                         try:
-                            if hasattr(model, '__len__') and len(model) >= 4:
+                            if hasattr(model, "__len__") and len(model) >= 4:
                                 first_item = model[0]
-                                if hasattr(first_item, '__contains__') and "name" in first_item and "item" in first_item:
+                                if (
+                                    hasattr(first_item, "__contains__")
+                                    and "name" in first_item
+                                    and "item" in first_item
+                                ):
                                     return child
-                                elif hasattr(first_item, 'property'):
+                                elif hasattr(first_item, "property"):
                                     # QML object, try property access
                                     name_prop = first_item.property("name")
                                     item_prop = first_item.property("item")
@@ -215,7 +240,9 @@ class MaterialSettingsPlugin(Extension):
             # Find the pagesList ListView in the dialog using recursive search
             list_view = self._findListViewWithModel(dialog)
             if list_view is None:
-                Logger.log("w", "Could not find pagesList ListView in PreferencesDialog")
+                Logger.log(
+                    "w", "Could not find pagesList ListView in PreferencesDialog"
+                )
                 return False
 
             current_model = list_view.property("model")
@@ -227,15 +254,20 @@ class MaterialSettingsPlugin(Extension):
             new_model = []
             for i, entry in enumerate(current_model):
                 if i == 3:  # Materials page is at index 3
-                    new_model.append({
-                        "name": entry["name"],
-                        "item": self._materials_page_path.toString()
-                    })
+                    new_model.append(
+                        {
+                            "name": entry["name"],
+                            "item": self._materials_page_path.toString(),
+                        }
+                    )
                 else:
                     new_model.append(entry)
 
             list_view.setProperty("model", new_model)
-            Logger.log("d", "Successfully patched PreferencesDialog to use MaterialSettingsPlugin MaterialsPage")
+            Logger.log(
+                "d",
+                "Successfully patched PreferencesDialog to use MaterialSettingsPlugin MaterialsPage",
+            )
             return True
 
         except Exception as e:
@@ -249,7 +281,10 @@ class MaterialSettingsPlugin(Extension):
         preferencesDialog = None
         main_window = CuraApplication.getInstance().getMainWindow()
         if not main_window:
-            Logger.log("e", "Could not replace Materials preferencepane with patched version because there is no main window")
+            Logger.log(
+                "e",
+                "Could not replace Materials preferencepane with patched version because there is no main window",
+            )
             return
         for child in main_window.contentItem().children():
             try:
@@ -260,7 +295,9 @@ class MaterialSettingsPlugin(Extension):
                 pass
 
         if not preferencesDialog:
-            Logger.log("e", "Could not replace Materials preferencepane with patched version")
+            Logger.log(
+                "e", "Could not replace Materials preferencepane with patched version"
+            )
             return
 
         Logger.log("d", "Replacing Materials preferencepane with patched version")
@@ -270,7 +307,9 @@ class MaterialSettingsPlugin(Extension):
             materialPreferencesPage = materialPreferencesPage.toString()
 
         preferencesDialog.removePage(3)
-        preferencesDialog.insertPage(3, catalog.i18nc("@title:tab", "Materials"), materialPreferencesPage)
+        preferencesDialog.insertPage(
+            3, catalog.i18nc("@title:tab", "Materials"), materialPreferencesPage
+        )
 
     def useValueFromMaterialContainer(self, kwargs) -> None:
         try:
@@ -283,11 +322,15 @@ class MaterialSettingsPlugin(Extension):
             return
 
         try:
-            material_container_index = global_container_stack.getContainers().index(global_container_stack.material)
+            material_container_index = global_container_stack.getContainers().index(
+                global_container_stack.material
+            )
         except ValueError:
             return
 
-        settable_per_extruder = global_container_stack.getProperty(setting_key, "settable_per_extruder")
+        settable_per_extruder = global_container_stack.getProperty(
+            setting_key, "settable_per_extruder"
+        )
         resolve_value = global_container_stack.getProperty(setting_key, "resolve")
         if not settable_per_extruder and resolve_value is None:
             # todo: notify user
@@ -295,9 +338,20 @@ class MaterialSettingsPlugin(Extension):
             return
 
         if settable_per_extruder:
-            value_string = "=extruderValueFromContainer(extruder_nr,\"%s\",%d)" %(setting_key, material_container_index)
-            ExtruderManager.getInstance().getActiveExtruderStack().userChanges.setProperty(setting_key, "value", value_string)
+            value_string = '=extruderValueFromContainer(extruder_nr,"%s",%d)' % (
+                setting_key,
+                material_container_index,
+            )
+            ExtruderManager.getInstance().getActiveExtruderStack().userChanges.setProperty(
+                setting_key, "value", value_string
+            )
         else:
             active_extruder_index = ExtruderManager.getInstance().activeExtruderIndex
-            value_string = "=extruderValueFromContainer(%d,\"%s\",%d)" %(active_extruder_index, setting_key, material_container_index)
-            global_container_stack.userChanges.setProperty(setting_key, "value", value_string)
+            value_string = '=extruderValueFromContainer(%d,"%s",%d)' % (
+                active_extruder_index,
+                setting_key,
+                material_container_index,
+            )
+            global_container_stack.userChanges.setProperty(
+                setting_key, "value", value_string
+            )

@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Aldo Hoeben / fieldOfView
+# Copyright (c) 2026 Aldo Hoeben / fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 try:
@@ -15,7 +15,7 @@ from cura.CuraApplication import CuraApplication
 from typing import Any, Optional
 
 from .MaterialSettingsPluginVisibilityHandler import (
-    MaterialSettingsPluginVisibilityHandler
+    MaterialSettingsPluginVisibilityHandler,
 )
 from .MaterialSettingDefinitionsModel import MaterialSettingDefinitionsModel
 from .CustomStackProxy import CustomStackProxy

@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Aldo Hoeben / fieldOfView
+# Copyright (c) 2026 Aldo Hoeben / fieldOfView
 # The MaterialSettingsPlugin is released under the terms of the AGPLv3 or higher.
 
 from UM.Settings.Models.SettingVisibilityHandler import SettingVisibilityHandler
@@ -17,7 +17,9 @@ class MaterialSettingsPluginVisibilityHandler(SettingVisibilityHandler):
         self.visibilityChanged.connect(self._updatePreference)
 
     def _loadPreferredSettings(self) -> None:
-        visibility_string = self._preferences.getValue("material_settings/visible_settings")
+        visibility_string = self._preferences.getValue(
+            "material_settings/visible_settings"
+        )
         if not visibility_string:
             self._preferences.resetPreference("material_settings/visible_settings")
             return
@@ -33,7 +35,9 @@ class MaterialSettingsPluginVisibilityHandler(SettingVisibilityHandler):
 
     def _updatePreference(self) -> None:
         visibility_string = ";".join(self.getVisible())
-        self._preferences.setValue("material_settings/visible_settings", visibility_string)
+        self._preferences.setValue(
+            "material_settings/visible_settings", visibility_string
+        )
 
     # Set a single SettingDefinition's visible state
     @pyqtSlot(str, bool)
